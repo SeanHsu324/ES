@@ -17,7 +17,7 @@ try:
     _lib = ctypes.CDLL(os.path.join(os.path.dirname(__file__), "big_two_c_lib.dll"))
 except OSError:
     # 如果找不到，嘗試從當前目錄載入
-    _lib = ctypes.CDLL("./big_two_c_lib.dll")
+    _lib = ctypes.CDLL(".big_two_c_lib.dll")
 
 # --- 函數接口定義 ---
 
@@ -83,7 +83,7 @@ def get_action_mask_c(
     
     return mask
 
-# 測試函數
+# 為了測試，我們需要一個簡單的測試函數
 def test_c_core():
     # 測試 evaluate_hand_c
     hand_vector = np.zeros(DECK_SIZE, dtype=np.int8)
@@ -99,7 +99,9 @@ def test_c_core():
     compare_result = compare_hands_c(hand1, hand2)
     # print(f"2S vs 2H: {compare_result}")
     
-    
+    # 測試 get_action_mask_c (需要 fixed_actions)
+    # 由於 fixed_actions 是一個巨大的陣列，我們不能在這裡定義它
+    # 我們將在 action_space.py 中處理這個問題
     
     return True
 
