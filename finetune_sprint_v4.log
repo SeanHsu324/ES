@@ -1,0 +1,842 @@
+正在載入目前最強模型作為對手...
+成功載入對手模型: models/big_two_best.pth
+環境初始化完成，並行環境數: 12
+成功載入最新 best 模型 models/big_two_best.pth 繼續衝刺。
+開始微調訓練，目標勝率 70%...
+Total Steps: 0 | Episodes: 0 | FPS: 0.00
+Total Steps: 3000 | Episodes: 175 | FPS: 226.27
+Total Steps: 6000 | Episodes: 358 | FPS: 215.76
+Total Steps: 9000 | Episodes: 543 | FPS: 216.08
+Total Steps: 12000 | Episodes: 727 | FPS: 214.69
+Total Steps: 15000 | Episodes: 908 | FPS: 215.64
+Total Steps: 18000 | Episodes: 1089 | FPS: 219.10
+Total Steps: 21000 | Episodes: 1270 | FPS: 220.92
+Episode 1300/100000 | Avg Reward: 46.57 | FPS: 220.19
+Total Steps: 24000 | Episodes: 1451 | FPS: 221.67
+Total Steps: 27000 | Episodes: 1630 | FPS: 221.57
+Total Steps: 30000 | Episodes: 1813 | FPS: 221.20
+Total Steps: 33000 | Episodes: 1996 | FPS: 220.99
+
+--- 微調評估對抗 ep50000 ---
+勝率: 29.00%
+微調模型已保存: models/big_two_fine_tuned_ep2045.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 36000 | Episodes: 2179 | FPS: 210.69
+Total Steps: 39000 | Episodes: 2362 | FPS: 211.57
+Total Steps: 42000 | Episodes: 2544 | FPS: 212.78
+Episode 2605/100000 | Avg Reward: 44.86 | FPS: 212.91
+Total Steps: 45000 | Episodes: 2728 | FPS: 214.11
+Total Steps: 48000 | Episodes: 2911 | FPS: 215.11
+Total Steps: 51000 | Episodes: 3093 | FPS: 215.35
+Total Steps: 54000 | Episodes: 3272 | FPS: 215.73
+Total Steps: 57000 | Episodes: 3458 | FPS: 216.39
+Total Steps: 60000 | Episodes: 3638 | FPS: 216.58
+Total Steps: 63000 | Episodes: 3816 | FPS: 217.12
+Total Steps: 66000 | Episodes: 4002 | FPS: 217.64
+Episode 4100/100000 | Avg Reward: 35.51 | FPS: 217.63
+
+--- 微調評估對抗 ep50000 ---
+勝率: 34.00%
+微調模型已保存: models/big_two_fine_tuned_ep4100.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 69000 | Episodes: 4185 | FPS: 212.68
+Total Steps: 72000 | Episodes: 4360 | FPS: 213.35
+Total Steps: 75000 | Episodes: 4540 | FPS: 213.79
+Total Steps: 78000 | Episodes: 4723 | FPS: 213.96
+Total Steps: 81000 | Episodes: 4906 | FPS: 214.41
+Total Steps: 84000 | Episodes: 5084 | FPS: 214.71
+Episode 5208/100000 | Avg Reward: 49.67 | FPS: 214.96
+Total Steps: 87000 | Episodes: 5268 | FPS: 215.13
+Total Steps: 90000 | Episodes: 5451 | FPS: 215.63
+Total Steps: 93000 | Episodes: 5629 | FPS: 215.68
+Total Steps: 96000 | Episodes: 5810 | FPS: 216.02
+Total Steps: 99000 | Episodes: 5993 | FPS: 216.25
+
+--- 微調評估對抗 ep50000 ---
+勝率: 25.00%
+微調模型已保存: models/big_two_fine_tuned_ep6136.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 102000 | Episodes: 6173 | FPS: 212.97
+Total Steps: 105000 | Episodes: 6357 | FPS: 213.55
+Total Steps: 108000 | Episodes: 6545 | FPS: 213.53
+Episode 6701/100000 | Avg Reward: 52.97 | FPS: 213.91
+Total Steps: 111000 | Episodes: 6727 | FPS: 213.99
+Total Steps: 114000 | Episodes: 6911 | FPS: 214.20
+Total Steps: 117000 | Episodes: 7093 | FPS: 214.61
+Total Steps: 120000 | Episodes: 7278 | FPS: 214.85
+Total Steps: 123000 | Episodes: 7462 | FPS: 215.31
+Total Steps: 126000 | Episodes: 7642 | FPS: 215.56
+Total Steps: 129000 | Episodes: 7826 | FPS: 216.04
+Total Steps: 132000 | Episodes: 8010 | FPS: 216.44
+Total Steps: 135000 | Episodes: 8194 | FPS: 216.83
+Episode 8206/100000 | Avg Reward: 36.76 | FPS: 216.73
+
+--- 微調評估對抗 ep50000 ---
+勝率: 29.00%
+微調模型已保存: models/big_two_fine_tuned_ep8206.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 138000 | Episodes: 8377 | FPS: 214.66
+Total Steps: 141000 | Episodes: 8560 | FPS: 215.05
+Total Steps: 144000 | Episodes: 8746 | FPS: 215.47
+Total Steps: 147000 | Episodes: 8932 | FPS: 215.92
+Total Steps: 150000 | Episodes: 9115 | FPS: 216.33
+Total Steps: 153000 | Episodes: 9298 | FPS: 216.70
+Total Steps: 156000 | Episodes: 9482 | FPS: 216.85
+Total Steps: 159000 | Episodes: 9665 | FPS: 216.79
+Total Steps: 162000 | Episodes: 9853 | FPS: 216.78
+Episode 9901/100000 | Avg Reward: 70.81 | FPS: 216.70
+Total Steps: 165000 | Episodes: 10035 | FPS: 216.77
+Total Steps: 168000 | Episodes: 10220 | FPS: 216.82
+
+--- 微調評估對抗 ep50000 ---
+勝率: 27.00%
+微調模型已保存: models/big_two_fine_tuned_ep10278.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 171000 | Episodes: 10403 | FPS: 214.36
+Total Steps: 174000 | Episodes: 10585 | FPS: 214.25
+Total Steps: 177000 | Episodes: 10765 | FPS: 214.12
+Total Steps: 180000 | Episodes: 10952 | FPS: 213.84
+Total Steps: 183000 | Episodes: 11135 | FPS: 213.80
+Total Steps: 186000 | Episodes: 11316 | FPS: 213.91
+Total Steps: 189000 | Episodes: 11496 | FPS: 214.03
+Total Steps: 192000 | Episodes: 11674 | FPS: 214.31
+Total Steps: 195000 | Episodes: 11861 | FPS: 213.82
+Total Steps: 198000 | Episodes: 12042 | FPS: 213.76
+Total Steps: 201000 | Episodes: 12223 | FPS: 213.80
+
+--- 微調評估對抗 ep50000 ---
+勝率: 37.00%
+微調模型已保存: models/big_two_fine_tuned_ep12330.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 204000 | Episodes: 12407 | FPS: 212.07
+Total Steps: 207000 | Episodes: 12588 | FPS: 211.94
+Episode 12703/100000 | Avg Reward: 63.33 | FPS: 211.89
+Total Steps: 210000 | Episodes: 12773 | FPS: 212.00
+Total Steps: 213000 | Episodes: 12951 | FPS: 212.10
+Total Steps: 216000 | Episodes: 13136 | FPS: 211.95
+Total Steps: 219000 | Episodes: 13315 | FPS: 211.98
+Total Steps: 222000 | Episodes: 13503 | FPS: 211.94
+Total Steps: 225000 | Episodes: 13687 | FPS: 212.05
+Total Steps: 228000 | Episodes: 13869 | FPS: 212.18
+Total Steps: 231000 | Episodes: 14057 | FPS: 212.23
+Episode 14209/100000 | Avg Reward: 53.99 | FPS: 212.22
+Total Steps: 234000 | Episodes: 14240 | FPS: 212.26
+
+--- 微調評估對抗 ep50000 ---
+勝率: 38.00%
+微調模型已保存: models/big_two_fine_tuned_ep14395.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 237000 | Episodes: 14422 | FPS: 210.74
+Total Steps: 240000 | Episodes: 14607 | FPS: 210.61
+Total Steps: 243000 | Episodes: 14789 | FPS: 210.61
+Total Steps: 246000 | Episodes: 14973 | FPS: 210.56
+Total Steps: 249000 | Episodes: 15159 | FPS: 210.30
+Total Steps: 252000 | Episodes: 15339 | FPS: 210.15
+Total Steps: 255000 | Episodes: 15528 | FPS: 209.82
+Total Steps: 258000 | Episodes: 15710 | FPS: 209.68
+Total Steps: 261000 | Episodes: 15892 | FPS: 209.58
+Episode 15900/100000 | Avg Reward: 50.17 | FPS: 209.48
+Total Steps: 264000 | Episodes: 16075 | FPS: 209.59
+Total Steps: 267000 | Episodes: 16260 | FPS: 209.40
+Total Steps: 270000 | Episodes: 16446 | FPS: 209.37
+
+--- 微調評估對抗 ep50000 ---
+勝率: 34.00%
+微調模型已保存: models/big_two_fine_tuned_ep16467.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 273000 | Episodes: 16629 | FPS: 208.04
+Total Steps: 276000 | Episodes: 16818 | FPS: 207.70
+Total Steps: 279000 | Episodes: 17000 | FPS: 207.18
+Total Steps: 282000 | Episodes: 17183 | FPS: 206.76
+Total Steps: 285000 | Episodes: 17368 | FPS: 206.56
+Total Steps: 288000 | Episodes: 17550 | FPS: 206.68
+Total Steps: 291000 | Episodes: 17735 | FPS: 206.55
+Total Steps: 294000 | Episodes: 17918 | FPS: 206.36
+Total Steps: 297000 | Episodes: 18103 | FPS: 205.97
+Total Steps: 300000 | Episodes: 18289 | FPS: 205.94
+Total Steps: 303000 | Episodes: 18475 | FPS: 205.92
+
+--- 微調評估對抗 ep50000 ---
+勝率: 43.00%
+微調模型已保存: models/big_two_fine_tuned_ep18542.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 306000 | Episodes: 18658 | FPS: 204.57
+Total Steps: 309000 | Episodes: 18838 | FPS: 204.68
+Total Steps: 312000 | Episodes: 19023 | FPS: 204.76
+Episode 19104/100000 | Avg Reward: 43.82 | FPS: 204.80
+Total Steps: 315000 | Episodes: 19205 | FPS: 204.84
+Total Steps: 318000 | Episodes: 19390 | FPS: 204.51
+Total Steps: 321000 | Episodes: 19571 | FPS: 204.56
+Total Steps: 324000 | Episodes: 19754 | FPS: 204.50
+Total Steps: 327000 | Episodes: 19936 | FPS: 204.44
+Total Steps: 330000 | Episodes: 20119 | FPS: 204.43
+Total Steps: 333000 | Episodes: 20305 | FPS: 204.37
+Total Steps: 336000 | Episodes: 20492 | FPS: 204.16
+Episode 20607/100000 | Avg Reward: 62.29 | FPS: 203.99
+
+--- 微調評估對抗 ep50000 ---
+勝率: 39.00%
+微調模型已保存: models/big_two_fine_tuned_ep20607.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 339000 | Episodes: 20676 | FPS: 203.03
+Total Steps: 342000 | Episodes: 20861 | FPS: 203.21
+Total Steps: 345000 | Episodes: 21043 | FPS: 203.18
+Total Steps: 348000 | Episodes: 21227 | FPS: 203.20
+Total Steps: 351000 | Episodes: 21411 | FPS: 203.14
+Total Steps: 354000 | Episodes: 21597 | FPS: 203.34
+Total Steps: 357000 | Episodes: 21784 | FPS: 203.33
+Total Steps: 360000 | Episodes: 21971 | FPS: 203.31
+Total Steps: 363000 | Episodes: 22157 | FPS: 203.34
+Total Steps: 366000 | Episodes: 22340 | FPS: 203.28
+Episode 22502/100000 | Avg Reward: 65.72 | FPS: 203.23
+Total Steps: 369000 | Episodes: 22523 | FPS: 203.22
+
+--- 微調評估對抗 ep50000 ---
+勝率: 25.00%
+微調模型已保存: models/big_two_fine_tuned_ep22694.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 372000 | Episodes: 22711 | FPS: 202.22
+Total Steps: 375000 | Episodes: 22890 | FPS: 202.26
+Total Steps: 378000 | Episodes: 23076 | FPS: 202.30
+Total Steps: 381000 | Episodes: 23262 | FPS: 202.15
+Total Steps: 384000 | Episodes: 23439 | FPS: 202.13
+Total Steps: 387000 | Episodes: 23623 | FPS: 202.14
+Total Steps: 390000 | Episodes: 23808 | FPS: 201.99
+Total Steps: 393000 | Episodes: 23988 | FPS: 202.02
+Episode 24001/100000 | Avg Reward: 91.56 | FPS: 201.99
+Total Steps: 396000 | Episodes: 24174 | FPS: 202.08
+Total Steps: 399000 | Episodes: 24355 | FPS: 201.93
+Total Steps: 402000 | Episodes: 24540 | FPS: 201.86
+Total Steps: 405000 | Episodes: 24727 | FPS: 201.84
+
+--- 微調評估對抗 ep50000 ---
+勝率: 37.00%
+微調模型已保存: models/big_two_fine_tuned_ep24755.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 408000 | Episodes: 24908 | FPS: 200.73
+Total Steps: 411000 | Episodes: 25089 | FPS: 200.69
+Total Steps: 414000 | Episodes: 25274 | FPS: 200.65
+Total Steps: 417000 | Episodes: 25458 | FPS: 200.69
+Episode 25507/100000 | Avg Reward: 71.12 | FPS: 200.64
+Total Steps: 420000 | Episodes: 25643 | FPS: 200.68
+Total Steps: 423000 | Episodes: 25828 | FPS: 200.71
+Total Steps: 426000 | Episodes: 26015 | FPS: 200.79
+Total Steps: 429000 | Episodes: 26201 | FPS: 200.65
+Total Steps: 432000 | Episodes: 26385 | FPS: 200.57
+Total Steps: 435000 | Episodes: 26573 | FPS: 200.52
+Total Steps: 438000 | Episodes: 26757 | FPS: 200.37
+
+--- 微調評估對抗 ep50000 ---
+勝率: 40.00%
+微調模型已保存: models/big_two_fine_tuned_ep26836.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 441000 | Episodes: 26945 | FPS: 199.34
+Total Steps: 444000 | Episodes: 27127 | FPS: 199.06
+Total Steps: 447000 | Episodes: 27313 | FPS: 199.01
+Episode 27407/100000 | Avg Reward: 62.00 | FPS: 198.82
+Total Steps: 450000 | Episodes: 27499 | FPS: 198.80
+Total Steps: 453000 | Episodes: 27683 | FPS: 198.83
+Total Steps: 456000 | Episodes: 27869 | FPS: 198.84
+Total Steps: 459000 | Episodes: 28049 | FPS: 198.86
+Total Steps: 462000 | Episodes: 28237 | FPS: 198.93
+Total Steps: 465000 | Episodes: 28424 | FPS: 198.98
+Total Steps: 468000 | Episodes: 28610 | FPS: 199.07
+Total Steps: 471000 | Episodes: 28792 | FPS: 199.17
+
+--- 微調評估對抗 ep50000 ---
+勝率: 38.00%
+微調模型已保存: models/big_two_fine_tuned_ep28925.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 474000 | Episodes: 28979 | FPS: 198.54
+Total Steps: 477000 | Episodes: 29164 | FPS: 198.62
+Episode 29303/100000 | Avg Reward: 66.51 | FPS: 198.74
+Total Steps: 480000 | Episodes: 29348 | FPS: 198.78
+Total Steps: 483000 | Episodes: 29532 | FPS: 198.90
+Total Steps: 486000 | Episodes: 29720 | FPS: 199.00
+Total Steps: 489000 | Episodes: 29903 | FPS: 199.16
+Total Steps: 492000 | Episodes: 30088 | FPS: 199.18
+Total Steps: 495000 | Episodes: 30274 | FPS: 199.10
+Total Steps: 498000 | Episodes: 30457 | FPS: 199.03
+Total Steps: 501000 | Episodes: 30642 | FPS: 198.99
+Total Steps: 504000 | Episodes: 30825 | FPS: 199.01
+Episode 31008/100000 | Avg Reward: 55.07 | FPS: 199.05
+
+--- 微調評估對抗 ep50000 ---
+勝率: 42.00%
+微調模型已保存: models/big_two_fine_tuned_ep31008.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 507000 | Episodes: 31016 | FPS: 198.37
+Episode 31200/100000 | Avg Reward: 73.45 | FPS: 198.51
+Total Steps: 510000 | Episodes: 31202 | FPS: 198.51
+Total Steps: 513000 | Episodes: 31387 | FPS: 198.63
+Total Steps: 516000 | Episodes: 31575 | FPS: 198.67
+Total Steps: 519000 | Episodes: 31762 | FPS: 198.76
+Total Steps: 522000 | Episodes: 31946 | FPS: 198.85
+Total Steps: 525000 | Episodes: 32128 | FPS: 198.96
+Total Steps: 528000 | Episodes: 32311 | FPS: 199.03
+Total Steps: 531000 | Episodes: 32496 | FPS: 199.15
+Total Steps: 534000 | Episodes: 32682 | FPS: 199.29
+Episode 32711/100000 | Avg Reward: 42.48 | FPS: 199.30
+Total Steps: 537000 | Episodes: 32866 | FPS: 199.43
+Episode 32902/100000 | Avg Reward: 103.14 | FPS: 199.43
+Total Steps: 540000 | Episodes: 33050 | FPS: 199.55
+
+--- 微調評估對抗 ep50000 ---
+勝率: 41.00%
+微調模型已保存: models/big_two_fine_tuned_ep33093.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 543000 | Episodes: 33235 | FPS: 199.07
+Total Steps: 546000 | Episodes: 33418 | FPS: 199.18
+Total Steps: 549000 | Episodes: 33610 | FPS: 199.18
+Total Steps: 552000 | Episodes: 33792 | FPS: 199.27
+Total Steps: 555000 | Episodes: 33973 | FPS: 199.39
+Total Steps: 558000 | Episodes: 34162 | FPS: 199.37
+Total Steps: 561000 | Episodes: 34345 | FPS: 199.39
+Total Steps: 564000 | Episodes: 34527 | FPS: 199.40
+Episode 34604/100000 | Avg Reward: 93.23 | FPS: 199.36
+Total Steps: 567000 | Episodes: 34714 | FPS: 199.41
+Total Steps: 570000 | Episodes: 34902 | FPS: 199.35
+Total Steps: 573000 | Episodes: 35090 | FPS: 199.42
+
+--- 微調評估對抗 ep50000 ---
+勝率: 36.00%
+微調模型已保存: models/big_two_fine_tuned_ep35178.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 576000 | Episodes: 35272 | FPS: 198.97
+Total Steps: 579000 | Episodes: 35456 | FPS: 199.08
+Total Steps: 582000 | Episodes: 35639 | FPS: 199.21
+Total Steps: 585000 | Episodes: 35823 | FPS: 199.21
+Total Steps: 588000 | Episodes: 36004 | FPS: 199.25
+Total Steps: 591000 | Episodes: 36190 | FPS: 199.33
+Episode 36309/100000 | Avg Reward: 92.86 | FPS: 199.39
+Total Steps: 594000 | Episodes: 36376 | FPS: 199.43
+Total Steps: 597000 | Episodes: 36557 | FPS: 199.55
+Total Steps: 600000 | Episodes: 36744 | FPS: 199.70
+Total Steps: 603000 | Episodes: 36931 | FPS: 199.86
+Total Steps: 606000 | Episodes: 37117 | FPS: 199.96
+
+--- 微調評估對抗 ep50000 ---
+勝率: 35.00%
+微調模型已保存: models/big_two_fine_tuned_ep37254.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 609000 | Episodes: 37301 | FPS: 199.58
+Total Steps: 612000 | Episodes: 37486 | FPS: 199.67
+Total Steps: 615000 | Episodes: 37672 | FPS: 199.78
+Total Steps: 618000 | Episodes: 37854 | FPS: 199.91
+Episode 38010/100000 | Avg Reward: 78.99 | FPS: 200.00
+Total Steps: 621000 | Episodes: 38041 | FPS: 200.02
+Total Steps: 624000 | Episodes: 38224 | FPS: 200.12
+Total Steps: 627000 | Episodes: 38411 | FPS: 200.22
+Total Steps: 630000 | Episodes: 38594 | FPS: 200.35
+Total Steps: 633000 | Episodes: 38779 | FPS: 200.48
+Total Steps: 636000 | Episodes: 38962 | FPS: 200.59
+Total Steps: 639000 | Episodes: 39150 | FPS: 200.68
+Total Steps: 642000 | Episodes: 39335 | FPS: 200.80
+
+--- 微調評估對抗 ep50000 ---
+勝率: 41.00%
+微調模型已保存: models/big_two_fine_tuned_ep39341.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 645000 | Episodes: 39521 | FPS: 200.35
+Total Steps: 648000 | Episodes: 39704 | FPS: 200.48
+Total Steps: 651000 | Episodes: 39891 | FPS: 200.60
+Episode 39908/100000 | Avg Reward: 83.13 | FPS: 200.59
+Total Steps: 654000 | Episodes: 40073 | FPS: 200.73
+Total Steps: 657000 | Episodes: 40259 | FPS: 200.85
+Total Steps: 660000 | Episodes: 40444 | FPS: 200.96
+Total Steps: 663000 | Episodes: 40632 | FPS: 201.09
+Total Steps: 666000 | Episodes: 40817 | FPS: 201.22
+Total Steps: 669000 | Episodes: 41007 | FPS: 201.36
+Total Steps: 672000 | Episodes: 41192 | FPS: 201.43
+Total Steps: 675000 | Episodes: 41380 | FPS: 201.55
+
+--- 微調評估對抗 ep50000 ---
+勝率: 39.00%
+微調模型已保存: models/big_two_fine_tuned_ep41430.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 678000 | Episodes: 41565 | FPS: 201.17
+Total Steps: 681000 | Episodes: 41750 | FPS: 201.32
+Episode 41810/100000 | Avg Reward: 76.33 | FPS: 201.35
+Total Steps: 684000 | Episodes: 41936 | FPS: 201.44
+Episode 42004/100000 | Avg Reward: 58.42 | FPS: 201.45
+Total Steps: 687000 | Episodes: 42122 | FPS: 201.49
+Total Steps: 690000 | Episodes: 42310 | FPS: 201.61
+Total Steps: 693000 | Episodes: 42495 | FPS: 201.68
+Total Steps: 696000 | Episodes: 42681 | FPS: 201.77
+Total Steps: 699000 | Episodes: 42865 | FPS: 201.85
+Total Steps: 702000 | Episodes: 43055 | FPS: 201.97
+Total Steps: 705000 | Episodes: 43244 | FPS: 202.11
+Total Steps: 708000 | Episodes: 43428 | FPS: 202.17
+
+--- 微調評估對抗 ep50000 ---
+勝率: 38.00%
+微調模型已保存: models/big_two_fine_tuned_ep43532.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 711000 | Episodes: 43618 | FPS: 201.79
+Total Steps: 714000 | Episodes: 43804 | FPS: 201.91
+Total Steps: 717000 | Episodes: 43989 | FPS: 202.02
+Episode 44102/100000 | Avg Reward: 106.48 | FPS: 202.08
+Total Steps: 720000 | Episodes: 44173 | FPS: 202.14
+Total Steps: 723000 | Episodes: 44359 | FPS: 202.22
+Total Steps: 726000 | Episodes: 44550 | FPS: 202.31
+Total Steps: 729000 | Episodes: 44733 | FPS: 202.41
+Total Steps: 732000 | Episodes: 44917 | FPS: 202.56
+Total Steps: 735000 | Episodes: 45106 | FPS: 202.67
+Total Steps: 738000 | Episodes: 45291 | FPS: 202.80
+Total Steps: 741000 | Episodes: 45474 | FPS: 202.92
+
+--- 微調評估對抗 ep50000 ---
+勝率: 43.00%
+微調模型已保存: models/big_two_fine_tuned_ep45625.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 744000 | Episodes: 45661 | FPS: 202.62
+Total Steps: 747000 | Episodes: 45847 | FPS: 202.71
+Episode 46004/100000 | Avg Reward: 92.77 | FPS: 202.78
+Total Steps: 750000 | Episodes: 46029 | FPS: 202.80
+Total Steps: 753000 | Episodes: 46217 | FPS: 202.90
+Total Steps: 756000 | Episodes: 46402 | FPS: 203.00
+Total Steps: 759000 | Episodes: 46589 | FPS: 203.10
+Total Steps: 762000 | Episodes: 46772 | FPS: 203.22
+Total Steps: 765000 | Episodes: 46958 | FPS: 203.28
+Total Steps: 768000 | Episodes: 47139 | FPS: 203.32
+Total Steps: 771000 | Episodes: 47325 | FPS: 203.38
+Total Steps: 774000 | Episodes: 47513 | FPS: 203.37
+Total Steps: 777000 | Episodes: 47698 | FPS: 203.34
+
+--- 微調評估對抗 ep50000 ---
+勝率: 39.00%
+微調模型已保存: models/big_two_fine_tuned_ep47712.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 780000 | Episodes: 47882 | FPS: 202.97
+Total Steps: 783000 | Episodes: 48073 | FPS: 203.03
+Total Steps: 786000 | Episodes: 48256 | FPS: 203.08
+Total Steps: 789000 | Episodes: 48442 | FPS: 203.15
+Total Steps: 792000 | Episodes: 48630 | FPS: 203.21
+Total Steps: 795000 | Episodes: 48813 | FPS: 203.25
+Total Steps: 798000 | Episodes: 49001 | FPS: 203.30
+Total Steps: 801000 | Episodes: 49186 | FPS: 203.32
+Total Steps: 804000 | Episodes: 49368 | FPS: 203.38
+Total Steps: 807000 | Episodes: 49554 | FPS: 203.44
+Episode 49611/100000 | Avg Reward: 96.94 | FPS: 203.43
+Total Steps: 810000 | Episodes: 49740 | FPS: 203.42
+Episode 49802/100000 | Avg Reward: 66.33 | FPS: 203.41
+
+--- 微調評估對抗 ep50000 ---
+勝率: 37.00%
+微調模型已保存: models/big_two_fine_tuned_ep49802.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 813000 | Episodes: 49925 | FPS: 203.10
+Total Steps: 816000 | Episodes: 50108 | FPS: 203.18
+Total Steps: 819000 | Episodes: 50295 | FPS: 203.21
+Total Steps: 822000 | Episodes: 50485 | FPS: 203.22
+Total Steps: 825000 | Episodes: 50670 | FPS: 203.27
+Total Steps: 828000 | Episodes: 50858 | FPS: 203.31
+Total Steps: 831000 | Episodes: 51046 | FPS: 203.39
+Total Steps: 834000 | Episodes: 51233 | FPS: 203.39
+Total Steps: 837000 | Episodes: 51417 | FPS: 203.45
+Total Steps: 840000 | Episodes: 51604 | FPS: 203.48
+Episode 51711/100000 | Avg Reward: 127.78 | FPS: 203.48
+Total Steps: 843000 | Episodes: 51789 | FPS: 203.52
+
+--- 微調評估對抗 ep50000 ---
+勝率: 40.00%
+微調模型已保存: models/big_two_fine_tuned_ep51898.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 846000 | Episodes: 51972 | FPS: 203.25
+Total Steps: 849000 | Episodes: 52156 | FPS: 203.30
+Total Steps: 852000 | Episodes: 52344 | FPS: 203.37
+Total Steps: 855000 | Episodes: 52530 | FPS: 203.39
+Total Steps: 858000 | Episodes: 52713 | FPS: 203.45
+Total Steps: 861000 | Episodes: 52900 | FPS: 203.49
+Total Steps: 864000 | Episodes: 53087 | FPS: 203.52
+Total Steps: 867000 | Episodes: 53278 | FPS: 203.55
+Total Steps: 870000 | Episodes: 53464 | FPS: 203.59
+Total Steps: 873000 | Episodes: 53648 | FPS: 203.66
+Episode 53805/100000 | Avg Reward: 91.26 | FPS: 203.69
+Total Steps: 876000 | Episodes: 53834 | FPS: 203.70
+Episode 54000/100000 | Avg Reward: 65.62 | FPS: 203.71
+
+--- 微調評估對抗 ep50000 ---
+勝率: 42.00%
+微調模型已保存: models/big_two_fine_tuned_ep54000.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 879000 | Episodes: 54023 | FPS: 203.35
+Total Steps: 882000 | Episodes: 54207 | FPS: 203.38
+Total Steps: 885000 | Episodes: 54395 | FPS: 203.46
+Total Steps: 888000 | Episodes: 54579 | FPS: 203.48
+Total Steps: 891000 | Episodes: 54768 | FPS: 203.54
+Total Steps: 894000 | Episodes: 54956 | FPS: 203.55
+Total Steps: 897000 | Episodes: 55142 | FPS: 203.57
+Total Steps: 900000 | Episodes: 55325 | FPS: 203.61
+Total Steps: 903000 | Episodes: 55514 | FPS: 203.63
+Total Steps: 906000 | Episodes: 55698 | FPS: 203.65
+Total Steps: 909000 | Episodes: 55886 | FPS: 203.71
+Episode 55906/100000 | Avg Reward: 93.58 | FPS: 203.69
+Total Steps: 912000 | Episodes: 56072 | FPS: 203.72
+
+--- 微調評估對抗 ep50000 ---
+勝率: 37.00%
+微調模型已保存: models/big_two_fine_tuned_ep56099.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 915000 | Episodes: 56258 | FPS: 203.37
+Total Steps: 918000 | Episodes: 56444 | FPS: 203.38
+Total Steps: 921000 | Episodes: 56630 | FPS: 203.40
+Total Steps: 924000 | Episodes: 56818 | FPS: 203.42
+Total Steps: 927000 | Episodes: 57004 | FPS: 203.41
+Total Steps: 930000 | Episodes: 57192 | FPS: 203.42
+Total Steps: 933000 | Episodes: 57377 | FPS: 203.41
+Total Steps: 936000 | Episodes: 57564 | FPS: 203.41
+Total Steps: 939000 | Episodes: 57748 | FPS: 203.43
+Total Steps: 942000 | Episodes: 57934 | FPS: 203.39
+Episode 58002/100000 | Avg Reward: 78.02 | FPS: 203.38
+Total Steps: 945000 | Episodes: 58119 | FPS: 203.44
+
+--- 微調評估對抗 ep50000 ---
+勝率: 42.00%
+微調模型已保存: models/big_two_fine_tuned_ep58192.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 948000 | Episodes: 58304 | FPS: 203.10
+Total Steps: 951000 | Episodes: 58491 | FPS: 203.13
+Total Steps: 954000 | Episodes: 58679 | FPS: 203.19
+Total Steps: 957000 | Episodes: 58864 | FPS: 203.25
+Total Steps: 960000 | Episodes: 59051 | FPS: 203.30
+Total Steps: 963000 | Episodes: 59237 | FPS: 203.39
+Total Steps: 966000 | Episodes: 59427 | FPS: 203.47
+Total Steps: 969000 | Episodes: 59611 | FPS: 203.55
+Total Steps: 972000 | Episodes: 59798 | FPS: 203.55
+Total Steps: 975000 | Episodes: 59989 | FPS: 203.58
+Episode 60109/100000 | Avg Reward: 102.30 | FPS: 203.61
+Total Steps: 978000 | Episodes: 60176 | FPS: 203.63
+
+--- 微調評估對抗 ep50000 ---
+勝率: 35.00%
+微調模型已保存: models/big_two_fine_tuned_ep60297.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 981000 | Episodes: 60361 | FPS: 203.33
+Total Steps: 984000 | Episodes: 60552 | FPS: 203.34
+Total Steps: 987000 | Episodes: 60738 | FPS: 203.40
+Total Steps: 990000 | Episodes: 60922 | FPS: 203.45
+Total Steps: 993000 | Episodes: 61108 | FPS: 203.52
+Total Steps: 996000 | Episodes: 61298 | FPS: 203.58
+Total Steps: 999000 | Episodes: 61488 | FPS: 203.66
+Total Steps: 1002000 | Episodes: 61673 | FPS: 203.72
+Total Steps: 1005000 | Episodes: 61858 | FPS: 203.77
+Total Steps: 1008000 | Episodes: 62049 | FPS: 203.83
+Episode 62210/100000 | Avg Reward: 73.01 | FPS: 203.86
+Total Steps: 1011000 | Episodes: 62231 | FPS: 203.87
+Episode 62405/100000 | Avg Reward: 97.15 | FPS: 203.91
+
+--- 微調評估對抗 ep50000 ---
+勝率: 41.00%
+微調模型已保存: models/big_two_fine_tuned_ep62405.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 1014000 | Episodes: 62418 | FPS: 203.61
+Total Steps: 1017000 | Episodes: 62606 | FPS: 203.66
+Total Steps: 1020000 | Episodes: 62791 | FPS: 203.73
+Total Steps: 1023000 | Episodes: 62978 | FPS: 203.82
+Total Steps: 1026000 | Episodes: 63166 | FPS: 203.92
+Total Steps: 1029000 | Episodes: 63355 | FPS: 203.98
+Total Steps: 1032000 | Episodes: 63542 | FPS: 204.01
+Total Steps: 1035000 | Episodes: 63732 | FPS: 204.07
+Total Steps: 1038000 | Episodes: 63920 | FPS: 204.13
+Total Steps: 1041000 | Episodes: 64110 | FPS: 204.16
+Total Steps: 1044000 | Episodes: 64296 | FPS: 204.22
+Total Steps: 1047000 | Episodes: 64484 | FPS: 204.30
+
+--- 微調評估對抗 ep50000 ---
+勝率: 46.00%
+微調模型已保存: models/big_two_fine_tuned_ep64518.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 1050000 | Episodes: 64673 | FPS: 204.10
+Episode 64709/100000 | Avg Reward: 88.77 | FPS: 204.10
+Total Steps: 1053000 | Episodes: 64856 | FPS: 204.17
+Episode 64902/100000 | Avg Reward: 105.05 | FPS: 204.17
+Total Steps: 1056000 | Episodes: 65043 | FPS: 204.25
+Total Steps: 1059000 | Episodes: 65226 | FPS: 204.29
+Total Steps: 1062000 | Episodes: 65412 | FPS: 204.29
+Total Steps: 1065000 | Episodes: 65599 | FPS: 204.33
+Total Steps: 1068000 | Episodes: 65785 | FPS: 204.35
+Total Steps: 1071000 | Episodes: 65970 | FPS: 204.40
+Total Steps: 1074000 | Episodes: 66156 | FPS: 204.47
+Total Steps: 1077000 | Episodes: 66343 | FPS: 204.50
+Total Steps: 1080000 | Episodes: 66528 | FPS: 204.56
+
+--- 微調評估對抗 ep50000 ---
+勝率: 42.00%
+微調模型已保存: models/big_two_fine_tuned_ep66612.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 1083000 | Episodes: 66714 | FPS: 204.34
+Episode 66805/100000 | Avg Reward: 87.79 | FPS: 204.36
+Total Steps: 1086000 | Episodes: 66901 | FPS: 204.41
+Total Steps: 1089000 | Episodes: 67090 | FPS: 204.47
+Total Steps: 1092000 | Episodes: 67277 | FPS: 204.48
+Total Steps: 1095000 | Episodes: 67464 | FPS: 204.53
+Total Steps: 1098000 | Episodes: 67646 | FPS: 204.59
+Total Steps: 1101000 | Episodes: 67832 | FPS: 204.65
+Total Steps: 1104000 | Episodes: 68022 | FPS: 204.71
+Total Steps: 1107000 | Episodes: 68208 | FPS: 204.76
+Total Steps: 1110000 | Episodes: 68390 | FPS: 204.79
+Total Steps: 1113000 | Episodes: 68578 | FPS: 204.84
+Episode 68711/100000 | Avg Reward: 92.18 | FPS: 204.88
+
+--- 微調評估對抗 ep50000 ---
+勝率: 42.00%
+微調模型已保存: models/big_two_fine_tuned_ep68711.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 1116000 | Episodes: 68765 | FPS: 204.64
+Episode 68901/100000 | Avg Reward: 94.04 | FPS: 204.68
+Total Steps: 1119000 | Episodes: 68949 | FPS: 204.70
+Total Steps: 1122000 | Episodes: 69135 | FPS: 204.77
+Total Steps: 1125000 | Episodes: 69324 | FPS: 204.85
+Total Steps: 1128000 | Episodes: 69513 | FPS: 204.92
+Total Steps: 1131000 | Episodes: 69699 | FPS: 205.00
+Total Steps: 1134000 | Episodes: 69884 | FPS: 205.07
+Total Steps: 1137000 | Episodes: 70070 | FPS: 205.15
+Total Steps: 1140000 | Episodes: 70255 | FPS: 205.16
+Total Steps: 1143000 | Episodes: 70440 | FPS: 205.18
+Total Steps: 1146000 | Episodes: 70628 | FPS: 205.25
+
+--- 微調評估對抗 ep50000 ---
+勝率: 41.00%
+微調模型已保存: models/big_two_fine_tuned_ep70814.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 1149000 | Episodes: 70820 | FPS: 205.00
+Episode 71001/100000 | Avg Reward: 115.49 | FPS: 205.06
+Total Steps: 1152000 | Episodes: 71001 | FPS: 205.06
+Total Steps: 1155000 | Episodes: 71190 | FPS: 205.15
+Total Steps: 1158000 | Episodes: 71377 | FPS: 205.21
+Total Steps: 1161000 | Episodes: 71561 | FPS: 205.28
+Total Steps: 1164000 | Episodes: 71750 | FPS: 205.35
+Total Steps: 1167000 | Episodes: 71934 | FPS: 205.43
+Total Steps: 1170000 | Episodes: 72119 | FPS: 205.50
+Total Steps: 1173000 | Episodes: 72307 | FPS: 205.56
+Total Steps: 1176000 | Episodes: 72495 | FPS: 205.61
+Total Steps: 1179000 | Episodes: 72682 | FPS: 205.66
+Total Steps: 1182000 | Episodes: 72868 | FPS: 205.72
+
+--- 微調評估對抗 ep50000 ---
+勝率: 37.00%
+微調模型已保存: models/big_two_fine_tuned_ep72913.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 1185000 | Episodes: 73053 | FPS: 205.46
+Episode 73105/100000 | Avg Reward: 107.52 | FPS: 205.43
+Total Steps: 1188000 | Episodes: 73243 | FPS: 205.42
+Total Steps: 1191000 | Episodes: 73426 | FPS: 205.44
+Total Steps: 1194000 | Episodes: 73616 | FPS: 205.49
+Total Steps: 1197000 | Episodes: 73802 | FPS: 205.54
+Total Steps: 1200000 | Episodes: 73990 | FPS: 205.56
+Total Steps: 1203000 | Episodes: 74181 | FPS: 205.62
+Total Steps: 1206000 | Episodes: 74368 | FPS: 205.65
+Total Steps: 1209000 | Episodes: 74556 | FPS: 205.69
+Total Steps: 1212000 | Episodes: 74740 | FPS: 205.73
+Total Steps: 1215000 | Episodes: 74926 | FPS: 205.78
+
+--- 微調評估對抗 ep50000 ---
+勝率: 50.00%
+微調模型已保存: models/big_two_fine_tuned_ep75024.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 1218000 | Episodes: 75119 | FPS: 205.61
+Total Steps: 1221000 | Episodes: 75306 | FPS: 205.68
+Episode 75411/100000 | Avg Reward: 121.18 | FPS: 205.72
+Total Steps: 1224000 | Episodes: 75492 | FPS: 205.76
+Episode 75601/100000 | Avg Reward: 92.62 | FPS: 205.78
+Total Steps: 1227000 | Episodes: 75680 | FPS: 205.81
+Total Steps: 1230000 | Episodes: 75870 | FPS: 205.88
+Total Steps: 1233000 | Episodes: 76056 | FPS: 205.92
+Total Steps: 1236000 | Episodes: 76245 | FPS: 205.99
+Total Steps: 1239000 | Episodes: 76430 | FPS: 206.07
+Total Steps: 1242000 | Episodes: 76619 | FPS: 206.15
+Total Steps: 1245000 | Episodes: 76807 | FPS: 206.23
+Total Steps: 1248000 | Episodes: 76993 | FPS: 206.31
+
+--- 微調評估對抗 ep50000 ---
+勝率: 39.00%
+微調模型已保存: models/big_two_fine_tuned_ep77138.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 1251000 | Episodes: 77184 | FPS: 206.15
+Total Steps: 1254000 | Episodes: 77371 | FPS: 206.22
+Total Steps: 1257000 | Episodes: 77560 | FPS: 206.19
+Total Steps: 1260000 | Episodes: 77745 | FPS: 206.19
+Episode 77904/100000 | Avg Reward: 87.82 | FPS: 206.23
+Total Steps: 1263000 | Episodes: 77930 | FPS: 206.24
+Episode 78102/100000 | Avg Reward: 74.21 | FPS: 206.30
+Total Steps: 1266000 | Episodes: 78120 | FPS: 206.30
+Total Steps: 1269000 | Episodes: 78310 | FPS: 206.35
+Total Steps: 1272000 | Episodes: 78499 | FPS: 206.44
+Total Steps: 1275000 | Episodes: 78686 | FPS: 206.48
+Total Steps: 1278000 | Episodes: 78872 | FPS: 206.52
+Total Steps: 1281000 | Episodes: 79061 | FPS: 206.59
+Total Steps: 1284000 | Episodes: 79247 | FPS: 206.62
+
+--- 微調評估對抗 ep50000 ---
+勝率: 45.00%
+微調模型已保存: models/big_two_fine_tuned_ep79253.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 1287000 | Episodes: 79436 | FPS: 206.40
+Total Steps: 1290000 | Episodes: 79622 | FPS: 206.47
+Total Steps: 1293000 | Episodes: 79811 | FPS: 206.55
+Total Steps: 1296000 | Episodes: 79996 | FPS: 206.60
+Total Steps: 1299000 | Episodes: 80178 | FPS: 206.65
+Episode 80207/100000 | Avg Reward: 76.44 | FPS: 206.64
+Total Steps: 1302000 | Episodes: 80364 | FPS: 206.69
+Total Steps: 1305000 | Episodes: 80554 | FPS: 206.75
+Total Steps: 1308000 | Episodes: 80740 | FPS: 206.80
+Total Steps: 1311000 | Episodes: 80931 | FPS: 206.86
+Total Steps: 1314000 | Episodes: 81119 | FPS: 206.94
+Total Steps: 1317000 | Episodes: 81308 | FPS: 207.02
+
+--- 微調評估對抗 ep50000 ---
+勝率: 48.00%
+微調模型已保存: models/big_two_fine_tuned_ep81362.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 1320000 | Episodes: 81490 | FPS: 206.87
+Total Steps: 1323000 | Episodes: 81676 | FPS: 206.88
+Total Steps: 1326000 | Episodes: 81866 | FPS: 206.94
+Total Steps: 1329000 | Episodes: 82056 | FPS: 207.00
+Total Steps: 1332000 | Episodes: 82244 | FPS: 207.05
+Total Steps: 1335000 | Episodes: 82433 | FPS: 207.11
+Total Steps: 1338000 | Episodes: 82620 | FPS: 207.17
+Episode 82707/100000 | Avg Reward: 95.16 | FPS: 207.18
+Total Steps: 1341000 | Episodes: 82807 | FPS: 207.20
+Episode 82900/100000 | Avg Reward: 81.14 | FPS: 207.23
+Total Steps: 1344000 | Episodes: 82994 | FPS: 207.27
+Total Steps: 1347000 | Episodes: 83179 | FPS: 207.32
+Total Steps: 1350000 | Episodes: 83367 | FPS: 207.38
+
+--- 微調評估對抗 ep50000 ---
+勝率: 42.00%
+微調模型已保存: models/big_two_fine_tuned_ep83468.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 1353000 | Episodes: 83553 | FPS: 207.19
+Total Steps: 1356000 | Episodes: 83739 | FPS: 207.20
+Total Steps: 1359000 | Episodes: 83932 | FPS: 207.23
+Total Steps: 1362000 | Episodes: 84117 | FPS: 207.28
+Total Steps: 1365000 | Episodes: 84304 | FPS: 207.33
+Total Steps: 1368000 | Episodes: 84491 | FPS: 207.36
+Total Steps: 1371000 | Episodes: 84680 | FPS: 207.41
+Total Steps: 1374000 | Episodes: 84872 | FPS: 207.40
+Episode 85010/100000 | Avg Reward: 114.01 | FPS: 207.41
+Total Steps: 1377000 | Episodes: 85059 | FPS: 207.42
+Episode 85204/100000 | Avg Reward: 126.96 | FPS: 207.43
+Total Steps: 1380000 | Episodes: 85247 | FPS: 207.44
+Total Steps: 1383000 | Episodes: 85432 | FPS: 207.47
+
+--- 微調評估對抗 ep50000 ---
+勝率: 35.00%
+微調模型已保存: models/big_two_fine_tuned_ep85586.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 1386000 | Episodes: 85618 | FPS: 207.30
+Total Steps: 1389000 | Episodes: 85803 | FPS: 207.35
+Total Steps: 1392000 | Episodes: 85988 | FPS: 207.38
+Total Steps: 1395000 | Episodes: 86174 | FPS: 207.38
+Total Steps: 1398000 | Episodes: 86361 | FPS: 207.41
+Total Steps: 1401000 | Episodes: 86546 | FPS: 207.42
+Total Steps: 1404000 | Episodes: 86736 | FPS: 207.47
+Total Steps: 1407000 | Episodes: 86925 | FPS: 207.53
+Total Steps: 1410000 | Episodes: 87112 | FPS: 207.59
+Total Steps: 1413000 | Episodes: 87298 | FPS: 207.64
+Episode 87305/100000 | Avg Reward: 134.17 | FPS: 207.63
+Total Steps: 1416000 | Episodes: 87488 | FPS: 207.66
+Total Steps: 1419000 | Episodes: 87674 | FPS: 207.68
+
+--- 微調評估對抗 ep50000 ---
+勝率: 51.00%
+微調模型已保存: models/big_two_fine_tuned_ep87691.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 1422000 | Episodes: 87858 | FPS: 207.48
+Total Steps: 1425000 | Episodes: 88047 | FPS: 207.50
+Total Steps: 1428000 | Episodes: 88231 | FPS: 207.52
+Total Steps: 1431000 | Episodes: 88416 | FPS: 207.54
+Total Steps: 1434000 | Episodes: 88609 | FPS: 207.59
+Total Steps: 1437000 | Episodes: 88796 | FPS: 207.64
+Total Steps: 1440000 | Episodes: 88983 | FPS: 207.69
+Total Steps: 1443000 | Episodes: 89171 | FPS: 207.74
+Total Steps: 1446000 | Episodes: 89357 | FPS: 207.79
+Total Steps: 1449000 | Episodes: 89547 | FPS: 207.81
+Total Steps: 1452000 | Episodes: 89738 | FPS: 207.83
+Episode 89804/100000 | Avg Reward: 110.09 | FPS: 207.83
+
+--- 微調評估對抗 ep50000 ---
+勝率: 40.00%
+微調模型已保存: models/big_two_fine_tuned_ep89804.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 1455000 | Episodes: 89923 | FPS: 207.66
+Total Steps: 1458000 | Episodes: 90111 | FPS: 207.70
+Total Steps: 1461000 | Episodes: 90300 | FPS: 207.73
+Total Steps: 1464000 | Episodes: 90491 | FPS: 207.72
+Total Steps: 1467000 | Episodes: 90677 | FPS: 207.74
+Total Steps: 1470000 | Episodes: 90868 | FPS: 207.75
+Total Steps: 1473000 | Episodes: 91055 | FPS: 207.79
+Total Steps: 1476000 | Episodes: 91243 | FPS: 207.82
+Total Steps: 1479000 | Episodes: 91429 | FPS: 207.86
+Total Steps: 1482000 | Episodes: 91617 | FPS: 207.91
+Total Steps: 1485000 | Episodes: 91804 | FPS: 207.95
+
+--- 微調評估對抗 ep50000 ---
+勝率: 49.00%
+微調模型已保存: models/big_two_fine_tuned_ep91923.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 1488000 | Episodes: 91996 | FPS: 207.72
+Total Steps: 1491000 | Episodes: 92184 | FPS: 207.75
+Episode 92304/100000 | Avg Reward: 103.72 | FPS: 207.76
+Total Steps: 1494000 | Episodes: 92369 | FPS: 207.77
+Total Steps: 1497000 | Episodes: 92558 | FPS: 207.77
+Total Steps: 1500000 | Episodes: 92750 | FPS: 207.78
+Total Steps: 1503000 | Episodes: 92938 | FPS: 207.81
+Total Steps: 1506000 | Episodes: 93127 | FPS: 207.84
+Total Steps: 1509000 | Episodes: 93311 | FPS: 207.86
+Total Steps: 1512000 | Episodes: 93502 | FPS: 207.87
+Total Steps: 1515000 | Episodes: 93693 | FPS: 207.86
+Total Steps: 1518000 | Episodes: 93880 | FPS: 207.88
+
+--- 微調評估對抗 ep50000 ---
+勝率: 47.00%
+微調模型已保存: models/big_two_fine_tuned_ep94042.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 1521000 | Episodes: 94066 | FPS: 207.67
+Total Steps: 1524000 | Episodes: 94249 | FPS: 207.66
+Total Steps: 1527000 | Episodes: 94436 | FPS: 207.69
+Total Steps: 1530000 | Episodes: 94622 | FPS: 207.70
+Episode 94807/100000 | Avg Reward: 131.64 | FPS: 207.73
+Total Steps: 1533000 | Episodes: 94813 | FPS: 207.73
+Episode 95001/100000 | Avg Reward: 78.27 | FPS: 207.75
+Total Steps: 1536000 | Episodes: 95001 | FPS: 207.75
+Total Steps: 1539000 | Episodes: 95184 | FPS: 207.78
+Total Steps: 1542000 | Episodes: 95375 | FPS: 207.82
+Total Steps: 1545000 | Episodes: 95563 | FPS: 207.85
+Total Steps: 1548000 | Episodes: 95750 | FPS: 207.88
+Total Steps: 1551000 | Episodes: 95934 | FPS: 207.90
+Total Steps: 1554000 | Episodes: 96122 | FPS: 207.89
+
+--- 微調評估對抗 ep50000 ---
+勝率: 42.00%
+微調模型已保存: models/big_two_fine_tuned_ep96148.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 1557000 | Episodes: 96310 | FPS: 207.70
+Total Steps: 1560000 | Episodes: 96500 | FPS: 207.74
+Total Steps: 1563000 | Episodes: 96687 | FPS: 207.77
+Total Steps: 1566000 | Episodes: 96873 | FPS: 207.81
+Total Steps: 1569000 | Episodes: 97066 | FPS: 207.82
+Total Steps: 1572000 | Episodes: 97257 | FPS: 207.86
+Total Steps: 1575000 | Episodes: 97444 | FPS: 207.91
+Episode 97503/100000 | Avg Reward: 90.04 | FPS: 207.91
+Total Steps: 1578000 | Episodes: 97632 | FPS: 207.93
+Total Steps: 1581000 | Episodes: 97821 | FPS: 207.92
+Total Steps: 1584000 | Episodes: 98011 | FPS: 207.92
+Total Steps: 1587000 | Episodes: 98199 | FPS: 207.93
+
+--- 微調評估對抗 ep50000 ---
+勝率: 48.00%
+微調模型已保存: models/big_two_fine_tuned_ep98274.pth
+最強模型已更新至: models/big_two_best.pth
+Total Steps: 1590000 | Episodes: 98385 | FPS: 207.77
+Total Steps: 1593000 | Episodes: 98573 | FPS: 207.80
+Total Steps: 1596000 | Episodes: 98762 | FPS: 207.81
+Total Steps: 1599000 | Episodes: 98954 | FPS: 207.85
+Total Steps: 1602000 | Episodes: 99138 | FPS: 207.87
+Total Steps: 1605000 | Episodes: 99328 | FPS: 207.90
+Total Steps: 1608000 | Episodes: 99509 | FPS: 207.92
+Total Steps: 1611000 | Episodes: 99698 | FPS: 207.94
+Episode 99809/100000 | Avg Reward: 112.58 | FPS: 207.96
+Total Steps: 1614000 | Episodes: 99887 | FPS: 207.97
+Episode 100000/100000 | Avg Reward: 105.20 | FPS: 208.00
