@@ -250,6 +250,7 @@ HELP = f"""
   [v all]        : 完整手牌辨識流程 (第一排 -> 第二排 -> 回初始點)
   [v p]          : Gemini 辨識出牌區
   [snap]         : 兩顆鏡頭各存一張照片
+  [check]        : ESP32 自我測試 (確認收到指令會動作、緊急停止有效)
   [cams]         : 列出可用的鏡頭編號 (目前設定: 手牌 {HAND_CAMERA_INDEX}, 出牌 {PLAY_CAMERA_INDEX})
   其他
   [s]            : 緊急停止 (播放中也可以輸入)
@@ -343,6 +344,9 @@ def main():
                 frame = cam.read()
                 if frame is not None:
                     print(f"📸 {save_snapshot(frame, tag)}")
+        elif op == 'check':
+            print("🔧 ESP32 自我測試 (底座 J1 會轉 5° 再轉回，結束後回到跟隨示範臂)")
+            print("✅ 全部通過" if robot.self_test() else "❌ 有項目沒通過")
         elif op == 'cams':
             used = {i for i, c in ((HAND_CAMERA_INDEX, preview.hand_cam), (PLAY_CAMERA_INDEX, preview.play_cam)) if c.ok}
             for i, info in probe_cameras(skip=used):
