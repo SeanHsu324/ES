@@ -21,6 +21,12 @@ FRAME_DT = 0.02          # 50Hz，與韌體一致
 MAX_STEP_DEG = 8         # 動作銜接時每幀最多變化角度 (與韌體 MAX_SPEED 相同)
 HOME = 'home'            # 初始點動作檔名稱 (actions/home.json，只有一個點位)
 IDLE_TOL_DEG = 1         # 錄製頭尾「沒在動」的判定容許誤差
+# 與韌體 (firmware/esp32_arm) 相同的角度限制，用來預測手臂實際會停在哪
+MIN_ANGLE, MAX_ANGLE, J6_MAX_ANGLE = 5, 175, 180
+
+
+def clamp_angles(angles):
+    return [max(MIN_ANGLE, min(J6_MAX_ANGLE if i == 5 else MAX_ANGLE, int(a))) for i, a in enumerate(angles)]
 
 
 def trim_idle(frames, tol=IDLE_TOL_DEG):
@@ -56,6 +62,10 @@ class RobotArm:
         self.is_recording = False
         self.recorded_frames = []
 
+        self._state = None                  # 韌體回應 ? 的 (模式, 角度)
+        self._state_event = threading.Event()
+        self._warned_no_state = False
+
         if port is None:
             print("[手臂] 模擬模式 (未連接 ESP32)")
             return
@@ -64,7 +74,11 @@ class RobotArm:
         self.ser = serial.Serial(port, baud, timeout=1)
         time.sleep(2)  # 等待 ESP32 重啟就緒
         threading.Thread(target=self._receive_loop, daemon=True).start()
-        print("[手臂] 連線成功")
+        st = self.query_state(timeout=1.0)
+        if st:
+            print(f"[手臂] 連線成功，韌體回應正常 (模式 {st[0]}, 角度 {st[1]})")
+        else:
+            print("[手臂] ⚠️ 已連線但韌體沒有回應狀態查詢，請確認已燒錄 firmware/esp32_arm")
 
     # ---------------- 接收 ----------------
     def _receive_loop(self):
@@ -78,8 +92,15 @@ class RobotArm:
                         self.current_angles = angles
                         if self.is_recording:
                             self.recorded_frames.append(angles)
+                elif line.startswith("STATE,"):
+                    parts = line.split(",")
+                    if len(parts) == 8:
+                        self._state = (parts[1], [int(p) for p in parts[2:]])
+                        self._state_event.set()
                 elif line.startswith("STATUS:"):
                     print(f"\n[ESP32 回報] {line}")
+                elif line.startswith("ERR"):
+                    print(f"\n[ESP32 錯誤] {line}")
             except Exception:
                 pass
 
@@ -155,6 +176,89 @@ class RobotArm:
     def set_home(self):
         return self.save_pose(HOME)
 
+    # ---------------- 狀態查詢 / 確認有照指令動作 ----------------
+    def query_state(self, timeout=0.5):
+        """問韌體目前模式與輸出角度，回傳 (模式, [j1..j6])；沒回應回傳 None"""
+        if self.ser is None:
+            return ('SIM', self.current_angles)
+        self._state_event.clear()
+        self.ser.write(b"?\n")
+        if not self._state_event.wait(timeout):
+            return None
+        return self._state
+
+    def verify_position(self, expected, tol=1):
+        """確認韌體輸出角度 = 最後送出的角度。True 成功 / False 不符 / None 韌體沒回應"""
+        if self.ser is None:
+            return True
+        st = self.query_state()
+        if st is None:
+            return None
+        mode, angles = st
+        diff = max(abs(a - b) for a, b in zip(angles, clamp_angles(expected)))
+        if mode != 'PLAYBACK' or diff > tol:
+            print(f"[手臂] ⚠️ 韌體狀態 {mode} 角度 {angles}，預期 {clamp_angles(expected)}")
+            return False
+        return True
+
+    def self_test(self, step=5):
+        """
+        確認 ESP32 收到指令會動作：狀態查詢 -> J1 轉 step 度再轉回 -> 緊急停止時不會動 -> 回到即時連動。
+        只會讓底座 J1 小幅轉動。回傳是否全部通過。
+        """
+        if self.ser is None:
+            print("模擬模式無法測試")
+            return False
+        if self.busy:
+            print("手臂忙碌中")
+            return False
+        results = []
+
+        def check(name, ok, info=""):
+            results.append(ok)
+            print(f"   {'✅' if ok else '❌'} {name} {info}")
+
+        st = self.query_state(1.0)
+        check("韌體回應狀態查詢", st is not None, st or "(沒回應，是不是舊韌體？)")
+        if st is None:
+            return False
+        if st[0] == 'EMERGENCY_STOP':
+            self.live()
+            time.sleep(0.5)
+            st = self.query_state(1.0)
+        base = clamp_angles(st[1])
+
+        self.busy = True
+        try:
+            self._send(base)                       # 進入播放模式，角度不變
+            time.sleep(0.3)
+            check("進入播放模式", self.verify_position(base) is True)
+            moved = list(base)
+            moved[0] += step if moved[0] + step <= MAX_ANGLE else -step
+            self._send(moved)
+            time.sleep(0.5)
+            check(f"J1 轉 {step}° ({base[0]} -> {moved[0]})", self.verify_position(moved) is True)
+            self._send(base)
+            time.sleep(0.5)
+            check("J1 轉回原位", self.verify_position(base) is True)
+
+            self.ser.write(b"s\n")
+            time.sleep(0.2)
+            self._send(moved)                      # 停止中送指令，不應該動
+            time.sleep(0.3)
+            st = self.query_state()
+            check("緊急停止時忽略動作指令",
+                  st is not None and st[0] == 'EMERGENCY_STOP' and st[1][0] == base[0],
+                  f"(J1={st[1][0]})" if st else "")
+            self.current_angles = base
+        finally:
+            self.busy = False
+        self.live()                                # 解除停止，回到跟隨示範臂
+        time.sleep(0.3)
+        st = self.query_state()
+        check("解除停止回到即時連動", st is not None and st[0] == 'RUNNING')
+        return all(results)
+
     # ---------------- 播放 ----------------
     def _send(self, angles):
         angles = [int(a) for a in angles]
@@ -197,6 +301,9 @@ class RobotArm:
         if self.busy:
             print("[手臂] 忙碌中，忽略新指令")
             return False
+        if self.mode == 'stopped':
+            print("[手臂] ⛔ 緊急停止中，請先解除停止 (r / G)")
+            return False
         names = list(names)
         if return_home and self.has_action(HOME) and (not names or names[-1] != HOME):
             names.append(HOME)
@@ -216,6 +323,15 @@ class RobotArm:
             except Exception as e:
                 ok = False
                 print(f"[手臂] 播放錯誤: {e}")
+            if ok and self.current_angles is not None:
+                # 確認 ESP32 真的照指令輸出到最後的角度
+                v = self.verify_position(self.current_angles)
+                if v is False:
+                    ok = False
+                    print("[手臂] ❌ ESP32 沒有照指令動作，已中止")
+                elif v is None and not self._warned_no_state:
+                    self._warned_no_state = True
+                    print("[手臂] ⚠️ 韌體沒回應狀態查詢，無法確認是否到位 (請燒錄 firmware/esp32_arm)")
             self.status = "Idle" if ok else "STOPPED"
             self.finished_at = time.time()
             self.busy = False

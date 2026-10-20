@@ -8,7 +8,7 @@ AI_MODEL_PATH = os.path.join(BASE_DIR, 'Ai_mod', 'big_two_best.pth')
 SNAPSHOT_DIR = os.path.join(BASE_DIR, 'webcam_snapshots')   # 每次拍手牌都存一張，方便除錯
 
 # --- 機器手臂 ---
-COM_PORT = 'COM3'          # 設成 None 則為模擬模式 (不接手臂，只印出動作)
+COM_PORT = 'COM5'          # 設成 None 則為模擬模式 (不接手臂，只印出動作)
 
 # --- 鏡頭 (用 record.py 的 cams 指令查有哪些編號) ---
 HAND_CAMERA_INDEX = 1      # 看手牌架的鏡頭
