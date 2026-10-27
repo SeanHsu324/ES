@@ -250,6 +250,7 @@ HELP = f"""
   [v all]        : 完整手牌辨識流程 (第一排 -> 第二排 -> 回初始點)
   [v p]          : Gemini 辨識出牌區
   [snap]         : 兩顆鏡頭各存一張照片
+  [clamp open/close] : 排夾開 / 關 (也可 clamp 45 45 直接給 J7 J8 角度)
   [check]        : ESP32 自我測試 (確認收到指令會動作、緊急停止有效)
   [cams]         : 列出可用的鏡頭編號 (目前設定: 手牌 {HAND_CAMERA_INDEX}, 出牌 {PLAY_CAMERA_INDEX})
   其他
@@ -344,6 +345,17 @@ def main():
                 frame = cam.read()
                 if frame is not None:
                     print(f"📸 {save_snapshot(frame, tag)}")
+        elif op == 'clamp':
+            if arg == 'open':
+                robot.open_clamps()
+            elif arg == 'close':
+                robot.close_clamps()
+            elif arg and len(arg.split()) == 2 and all(x.isdigit() for x in arg.split()):
+                a7, a8 = map(int, arg.split())
+                if robot.set_clamps([a7, a8]):
+                    print(f"[排夾] J7={a7} J8={a8}")
+            else:
+                print(f"⚠️ 用法: clamp open / clamp close / clamp 角度7 角度8   (目前 {robot.clamp_angles})")
         elif op == 'check':
             print("🔧 ESP32 自我測試 (底座 J1 會轉 5° 再轉回，結束後回到跟隨示範臂)")
             print("✅ 全部通過" if robot.self_test() else "❌ 有項目沒通過")

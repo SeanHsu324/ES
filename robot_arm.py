@@ -13,6 +13,8 @@ import threading
 
 import numpy as np
 
+from config import CLAMP_OPEN, CLAMP_CLOSED, CLAMP_SETTLE_SEC
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ACTIONS_DIR = os.path.join(BASE_DIR, 'actions')
 
@@ -63,8 +65,11 @@ class RobotArm:
         self.recorded_frames = []
 
         self._state = None                  # 韌體回應 ? 的 (模式, 角度)
+        self.clamp_angles = list(CLAMP_OPEN)  # 排夾 J7, J8 (韌體開機預設全開)
         self._state_event = threading.Event()
         self._warned_no_state = False
+        self._ready = False                 # 收過開機 READY 之後再看到 = ESP32 重新開機
+        self.last_ok = True                 # 最近一次 run_sequence 是否成功
 
         if port is None:
             print("[手臂] 模擬模式 (未連接 ESP32)")
@@ -74,6 +79,8 @@ class RobotArm:
         self.ser = serial.Serial(port, baud, timeout=1)
         time.sleep(2)  # 等待 ESP32 重啟就緒
         threading.Thread(target=self._receive_loop, daemon=True).start()
+        time.sleep(0.2)
+        self._ready = True
         st = self.query_state(timeout=1.0)
         if st:
             print(f"[手臂] 連線成功，韌體回應正常 (模式 {st[0]}, 角度 {st[1]})")
@@ -94,13 +101,21 @@ class RobotArm:
                             self.recorded_frames.append(angles)
                 elif line.startswith("STATE,"):
                     parts = line.split(",")
-                    if len(parts) == 8:
-                        self._state = (parts[1], [int(p) for p in parts[2:]])
+                    if len(parts) in (8, 10):
+                        self._state = (parts[1], [int(p) for p in parts[2:8]])
+                        if len(parts) == 10:
+                            self.clamp_angles = [int(p) for p in parts[8:10]]
                         self._state_event.set()
                 elif line.startswith("STATUS:"):
                     print(f"\n[ESP32 回報] {line}")
                 elif line.startswith("ERR"):
                     print(f"\n[ESP32 錯誤] {line}")
+                elif line == "READY" and self._ready:
+                    # 執行中突然重新開機，通常是伺服馬達瞬間電流太大、電源電壓不足
+                    print("\n[手臂] ⚠️ ESP32 重新開機了 (可能是電源不足)，目前動作已中止")
+                    self.abort.set()
+                    self.mode = 'live'
+                    self.clamp_angles = list(CLAMP_OPEN)
             except Exception:
                 pass
 
@@ -187,6 +202,44 @@ class RobotArm:
             return None
         return self._state
 
+    # ---------------- 排夾 ----------------
+    @property
+    def clamps_closed(self):
+        return list(self.clamp_angles) == list(CLAMP_CLOSED)
+
+    def set_clamps(self, angles):
+        """設定排夾 J7, J8 角度，並跟韌體確認。回傳是否成功"""
+        angles = [int(a) for a in angles]
+        if self.ser is None:
+            self.clamp_angles = angles
+            print(f"[排夾] (模擬) J7={angles[0]} J8={angles[1]}")
+            return True
+        if self.mode == 'stopped':
+            print("[排夾] ⛔ 緊急停止中，請先解除停止")
+            return False
+        self.ser.write(f"C,{angles[0]},{angles[1]}\n".encode())
+        time.sleep(CLAMP_SETTLE_SEC)
+        st = self.query_state()
+        if st is None:
+            print("[排夾] ⚠️ 韌體沒有回應，無法確認排夾狀態")
+            return False
+        if self.clamp_angles != angles:
+            print(f"[排夾] ❌ 韌體回報 {self.clamp_angles}，預期 {angles} (韌體版本太舊？)")
+            return False
+        return True
+
+    def open_clamps(self):
+        ok = self.set_clamps(CLAMP_OPEN)
+        if ok:
+            print("[排夾] 🔓 已開啟")
+        return ok
+
+    def close_clamps(self):
+        ok = self.set_clamps(CLAMP_CLOSED)
+        if ok:
+            print("[排夾] 🔒 已關閉")
+        return ok
+
     def verify_position(self, expected, tol=1):
         """確認韌體輸出角度 = 最後送出的角度。True 成功 / False 不符 / None 韌體沒回應"""
         if self.ser is None:
@@ -268,10 +321,37 @@ class RobotArm:
         self.mode = 'playback'
         time.sleep(FRAME_DT)
 
+    def _sync_from_firmware(self):
+        """以 ESP32 實際輸出的角度為準 (Python 記的角度可能和手臂實際位置不同)"""
+        if self.ser is None:
+            return
+        st = self.query_state()
+        if st is not None:
+            self.current_angles = list(st[1])
+
+    def _converge(self, target, max_tries=30):
+        """韌體每個封包最多轉 PLAYBACK_MAX_STEP 度；沒到位就補送目標，直到真的到位"""
+        if self.ser is None:
+            return True
+        target = clamp_angles(target)
+        for _ in range(max_tries):
+            if self.abort.is_set():
+                return False
+            st = self.query_state()
+            if st is None:
+                return False
+            if max(abs(a - b) for a, b in zip(st[1], target)) <= 1:
+                self.current_angles = list(st[1])
+                return True
+            self._send(target)
+        return False
+
     def _move_to(self, target):
         # 播放模式下韌體沒有限速，動作與動作之間用插值平滑銜接
+        self._sync_from_firmware()
         if self.current_angles is None:
             self._send(target)
+            self._converge(target)
             return
         start = np.array(self.current_angles, dtype=float)
         target = np.array(target, dtype=float)
@@ -280,6 +360,8 @@ class RobotArm:
             if self.abort.is_set():
                 return
             self._send(np.round(start + (target - start) * i / steps))
+        if not self._converge(target) and not self.abort.is_set():
+            print(f"[手臂] ⚠️ 沒辦法移到起始姿勢 {clamp_angles(target)}")
 
     def _play(self, name):
         frames = self.load_frames(name)
@@ -292,6 +374,7 @@ class RobotArm:
             if self.abort.is_set():
                 return
             self._send(frame)
+        self._converge(frames[-1])   # 單點動作 (初始點、拍照點) 一定要真的到位
 
     def run_sequence(self, names, on_done=None, return_home=True):
         """
@@ -333,12 +416,14 @@ class RobotArm:
                     self._warned_no_state = True
                     print("[手臂] ⚠️ 韌體沒回應狀態查詢，無法確認是否到位 (請燒錄 firmware/esp32_arm)")
             self.status = "Idle" if ok else "STOPPED"
+            self.last_ok = ok
             self.finished_at = time.time()
             self.busy = False
             if on_done:
                 on_done(ok)
 
         self.busy = True
+        self.last_ok = False
         self.abort.clear()
         threading.Thread(target=worker, daemon=True).start()
         return True

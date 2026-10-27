@@ -8,12 +8,15 @@
 //   P,j1,j2,j3,j4,j5,j6  播放模式：直接設定六軸角度 (格式錯誤會被拒絕)
 //   s / stop             緊急停止：手臂停在原地，忽略所有 P 指令
 //   r / run              解除停止並回到即時連動 (從手臂跟隨示範臂)
-//   ?                    查詢狀態，回傳 STATE,<模式>,j1,...,j6
+//   C,j7,j8              排夾角度 (J7 第一排、J8 第二排)
+//   C,OPEN / C,CLOSE     排夾全開 / 全關 (開機預設全開)
+//   ?                    查詢狀態，回傳 STATE,<模式>,j1,...,j6,j7,j8
 //
 // 回傳訊息：
 //   READY                       開機完成
 //   DATA,j1,...,j6              即時連動模式下每 20ms 回報角度 (錄製用)
-//   STATE,<模式>,j1,...,j6       回應 ? (模式: RUNNING / PLAYBACK / EMERGENCY_STOP)
+//   STATE,<模式>,j1,...,j8       回應 ? (模式: RUNNING / PLAYBACK / EMERGENCY_STOP)
+//   STATUS:CLAMP,j7,j8           排夾動作完成回報
 //   STATUS:<模式>                模式切換時回報
 //   ERR:<原因>                   指令被拒絕
 // =====================================================================
@@ -30,6 +33,12 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver(0x40);
 #define PLAYBACK_MAX_STEP 10  // 播放模式：每個封包 J1~J5 最多變化角度 (防止錯誤封包讓手臂暴衝)
 #define LOOP_INTERVAL_MS 20   // 即時連動更新週期 (50Hz)
 #define RX_MAX_LEN 64
+
+// 排夾 (手牌架第一排 J7、第二排 J8)，接在 PCA9685 通道 6、7
+const int CLAMP_CH[2]    = {6, 7};
+const int CLAMP_OPEN[2]  = {0, 90};   // J7: 0 開 / J8: 90 開
+const int CLAMP_CLOSE[2] = {90, 0};   // J7: 90 關 / J8: 0 關
+int clampAngles[2] = {0, 90};
 
 // 腳位定義 (J3 與 J4 已對調)
 const int potPins[6] = {36, 39, 35, 34, 32, 33};
@@ -82,7 +91,40 @@ void sendState() {
     Serial.print(",");
     Serial.print(lastOutputAngles[i]);
   }
+  for (int i = 0; i < 2; i++) {
+    Serial.print(",");
+    Serial.print(clampAngles[i]);
+  }
   Serial.println();
+}
+
+void writeClamps(const int a[2]) {
+  for (int i = 0; i < 2; i++) {
+    clampAngles[i] = constrain(a[i], 0, 180);
+    pwm.setPWM(CLAMP_CH[i], 0, angleToPulse(clampAngles[i]));
+  }
+}
+
+void handleClamp(const String& input) {
+  if (isEmergencyStop) {
+    Serial.println("ERR:STOPPED");
+    return;
+  }
+  int a[2];
+  if (input.equalsIgnoreCase("C,OPEN")) {
+    a[0] = CLAMP_OPEN[0]; a[1] = CLAMP_OPEN[1];
+  } else if (input.equalsIgnoreCase("C,CLOSE")) {
+    a[0] = CLAMP_CLOSE[0]; a[1] = CLAMP_CLOSE[1];
+  } else if (!parseInts(input, a, 2)) {
+    Serial.print("ERR:BAD_PACKET ");
+    Serial.println(input);
+    return;
+  }
+  writeClamps(a);
+  Serial.print("STATUS:CLAMP,");
+  Serial.print(clampAngles[0]);
+  Serial.print(",");
+  Serial.println(clampAngles[1]);
 }
 
 void reseedFilters() {
@@ -92,13 +134,13 @@ void reseedFilters() {
   }
 }
 
-// 解析 "P,j1,j2,j3,j4,j5,j6"：必須剛好 6 個整數，否則回傳 false
+// 解析 "X,a,b,..."：逗號後必須剛好 n 個整數，否則回傳 false
 // (舊版用 toInt()，格式壞掉時會變成 0 -> 手臂直衝到 5 度)
-bool parsePacket(const String& s, int out[6]) {
+bool parseInts(const String& s, int out[], int n) {
   int start = 2;
-  for (int i = 0; i < 6; i++) {
+  for (int i = 0; i < n; i++) {
     int comma = s.indexOf(',', start);
-    if (i < 5) {
+    if (i < n - 1) {
       if (comma == -1) return false;
     } else {
       if (comma != -1) return false;  // 多於 6 個值
@@ -128,7 +170,7 @@ void handlePlayback(const String& input) {
   }
 
   int angles[6];
-  if (!parsePacket(input, angles)) {
+  if (!parseInts(input, angles, 6)) {
     Serial.print("ERR:BAD_PACKET ");
     Serial.println(input);
     return;
@@ -172,6 +214,9 @@ void handleCommand(String input) {
   }
   else if (input.startsWith("P,")) {
     handlePlayback(input);
+  }
+  else if (input.startsWith("C,") || input.startsWith("c,")) {
+    handleClamp(input);
   }
   else {
     Serial.print("ERR:UNKNOWN ");
@@ -247,6 +292,7 @@ void setup() {
   pwm.setPWMFreq(50);
   delay(100);
 
+  writeClamps(CLAMP_OPEN);   // 排夾預設開啟，方便插牌
   reseedFilters();
   rxBuffer.reserve(RX_MAX_LEN + 1);
 

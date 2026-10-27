@@ -11,7 +11,7 @@ import cv2
 import numpy as np
 
 from config import (
-    CAMERA_WIDTH, CAMERA_HEIGHT, GEMINI_MODEL, HAND_ROI, PLAY_ROI,
+    CAMERA_WIDTH, CAMERA_HEIGHT, GEMINI_MODELS, GEMINI_TIMEOUT_SEC, HAND_ROI, PLAY_ROI,
     HAND_ZONES, NUM_SLOTS, PHOTO_SETTLE_SEC, HAND_REVERSED, SNAPSHOT_DIR,
 )
 from robot_arm import HOME
@@ -164,12 +164,20 @@ PLAY_PROMPT = (
 
 
 class GeminiCardReader:
-    def __init__(self, model=GEMINI_MODEL):
+    def __init__(self, models=GEMINI_MODELS):
         from google import genai
         from google.genai import types
         self.types = types
-        self.client = genai.Client()  # 自動讀取 GEMINI_API_KEY
-        self.model = model
+        api_key = os.environ.get('GEMINI_API_KEY', '').strip()   # config.py 已從 .env 載入
+        if not api_key:
+            raise RuntimeError("找不到 GEMINI_API_KEY，請在 ES/.env 寫入一行 GEMINI_API_KEY=你的key")
+        # 不讓 SDK 自己重試 (伺服器忙線時會卡好幾分鐘)，改由這裡換模型
+        self.client = genai.Client(api_key=api_key, http_options=types.HttpOptions(
+            timeout=int(GEMINI_TIMEOUT_SEC * 1000),
+            retry_options=types.HttpRetryOptions(attempts=1),
+        ))
+        self.models = list(models)
+        self.model = self.models[0]   # 最近一次成功的模型，下次優先用
         self.schema = types.Schema(
             type=types.Type.ARRAY,
             items=types.Schema(type=types.Type.STRING, enum=CARD_NAMES),
@@ -180,16 +188,30 @@ class GeminiCardReader:
         if not ok:
             raise RuntimeError("影像編碼失敗")
         types = self.types
-        resp = self.client.models.generate_content(
-            model=self.model,
-            contents=[types.Part.from_bytes(data=jpg.tobytes(), mime_type='image/jpeg'), prompt],
-            config=types.GenerateContentConfig(
-                response_mime_type='application/json',
-                response_schema=self.schema,
-                temperature=0,
-            ),
+        contents = [types.Part.from_bytes(data=jpg.tobytes(), mime_type='image/jpeg'), prompt]
+        config = types.GenerateContentConfig(
+            response_mime_type='application/json',
+            response_schema=self.schema,
+            thinking_config=types.ThinkingConfig(thinking_level='low'),  # 認牌不需要深度思考，快很多
         )
-        return [n.strip().upper() for n in json.loads(resp.text)]
+        order = [self.model] + [m for m in self.models if m != self.model]
+        errors = []
+        for model in order:
+            t0 = time.time()
+            try:
+                resp = self.client.models.generate_content(model=model, contents=contents, config=config)
+                names = [n.strip().upper() for n in json.loads(resp.text)]
+            except Exception as e:
+                msg = str(e).split('.')[0][:80]
+                errors.append(f"{model}: {msg}")
+                print(f"[Gemini] {model} 失敗 ({time.time()-t0:.0f}s): {msg}，換下一個模型")
+                continue
+            if model != self.model:
+                print(f"[Gemini] 改用 {model}")
+                self.model = model
+            print(f"[Gemini] {model} 回應 {time.time()-t0:.1f}s")
+            return names
+        raise RuntimeError("所有 Gemini 模型都失敗: " + " | ".join(errors))
 
     def read_hand(self, frame, n):
         """回傳該排由左到右的牌名陣列 (長度應為 n)"""
@@ -213,9 +235,11 @@ def capture_zone(robot, hand_cam, zone):
     if not robot.has_action(pose):
         print(f"[手牌] ❌ 缺少拍照點 {pose}，請用 record.py 設定")
         return None
-    robot.run_sequence([pose], return_home=False)
+    if not robot.run_sequence([pose], return_home=False):
+        return None
     robot.wait()
-    if robot.abort.is_set():
+    if robot.abort.is_set() or not robot.last_ok:
+        print(f"[手牌] ❌ 手臂沒有到達拍照點 {pose}，停止辨識 (請檢查手臂與電源)")
         return None
     time.sleep(PHOTO_SETTLE_SEC)
     frame = hand_cam.fresh()
@@ -233,7 +257,7 @@ def read_zone(reader, frame, zone):
 
 def scan_hand(robot, hand_cam, reader):
     """
-    依序到每一排的拍照點拍照並辨識，最後回初始點。
+    依序到每一排的拍照點拍照並辨識，回初始點後關閉排夾。
     回傳 (13 個牌名，依格子 1~13 排列, 是否完整可用)；手臂中斷回傳 (None, False)
     """
     all_names = []
@@ -245,6 +269,9 @@ def scan_hand(robot, hand_cam, reader):
     if robot.has_action(HOME):
         robot.run_sequence([HOME], return_home=False)
         robot.wait()
+    if robot.abort.is_set():
+        return None, False
+    robot.close_clamps()   # 拍完兩排、回到初始點 -> 夾住手牌
 
     ids = [get_card_id(n) for n in all_names]
     valid = None not in ids and len(set(ids)) == NUM_SLOTS

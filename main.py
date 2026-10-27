@@ -298,6 +298,9 @@ def main():
         if missing:
             print(f"[警告] 缺少動作檔 {missing}，請先用 record.py 錄製")
             return
+        if not robot.clamps_closed and not robot.close_clamps():
+            print("[警告] 排夾無法關閉，全自動未啟動")
+            return
         # 先回初始點，到位後才開始偵測出牌區
         robot.run_sequence([HOME], return_home=False)
         need_rebaseline = True
@@ -356,7 +359,7 @@ def main():
     print("--- 大老二 AI + 機器手臂 ---")
     print("[A] 全自動模式 開/關 (拍照辨識手牌、自動偵測對手出牌、輪到你時手臂自動出牌)")
     print("手動: [H]拍照辨識手牌 [Y]確認 [E]修改格子 [P]辨識對手出牌 [Enter]提交/AI出牌 [Space]對手Pass")
-    print("[C]清空緩衝 [R]重設 [S]緊急停止 [G]解除停止(回到跟隨示範臂) [Q]離開")
+    print("[O]排夾 開/關  [C]清空緩衝 [R]重設(排夾打開) [S]緊急停止 [G]解除停止(回到跟隨示範臂) [Q]離開")
 
     blank = np.zeros((720, 1280, 3), dtype=np.uint8)
     while True:
@@ -403,7 +406,8 @@ def main():
         slot_str = " ".join(f"{s}:{id_to_card_name(c) if c else '--'}" for s, c in game.slots.items())
         mode = 'SCANNING HAND' if scan['running'] else ('AUTO' if auto_mode else 'MANUAL')
         y = 30
-        put_text(view, f"MODE: {mode} | ARM: {robot.status}", y, 1.2, (255, 0, 255), 2); y += 30
+        clamp = 'CLOSED' if robot.clamps_closed else 'OPEN'
+        put_text(view, f"MODE: {mode} | ARM: {robot.status} | CLAMP: {clamp}", y, 1.2, (255, 0, 255), 2); y += 30
         put_text(view, f"SLOTS {slot_str}", y, 1.0, (0, 255, 0), 1); y += 30
         if pending_hand:
             pend = " ".join(f"{i+1}:{n}" for i, n in enumerate(pending_hand))
@@ -500,6 +504,14 @@ def main():
             if auto_mode:
                 watcher.rebaseline(frame)
 
+        elif key == ord('o'):  # 手動開關排夾
+            if auto_mode:
+                print("[警告] 全自動中不能開排夾，請先按 A 關閉全自動")
+            elif robot.clamps_closed:
+                robot.open_clamps()
+            else:
+                robot.close_clamps()
+
         elif key == ord('c'):
             temp_buffer.clear()
             print("[系統] 緩衝區已清空")
@@ -510,6 +522,7 @@ def main():
             pending_hand = None
             temp_buffer.clear()
             ai_suggestion = "Ready"
+            robot.open_clamps()   # 新局：打開排夾讓你插牌
             print("[系統] 遊戲狀態已完全重置")
 
         elif key == 13:  # Enter (手動模式)
