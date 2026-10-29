@@ -3,6 +3,7 @@ import sys
 sys.stdout.reconfigure(encoding='utf-8', errors='replace')  # 避免繁中 Windows 主控台 (cp950) 印 emoji 時崩潰
 import time
 import threading
+import queue
 
 import cv2
 import numpy as np
@@ -254,12 +255,27 @@ def main():
     ai_suggestion = "Ready"
     need_rebaseline = False       # 手臂動作完後要重設出牌區基準畫面
     scan = {'running': False, 'result': None, 'then_auto': False}
+    # 會花時間的事 (Gemini、等終端機輸入) 都丟到背景，畫面迴圈永遠不被卡住，
+    # 否則視窗超過幾秒沒更新，Windows 就會顯示「沒有回應」
+    bg = {'busy': None}          # 正在背景做的事 (畫面上顯示用，英文)，None = 沒有
+    ui_tasks = queue.Queue()     # 背景完成後要回到主迴圈執行的函式
 
-    def show_busy(frame, msg):
-        img = frame.copy()
-        put_text(img, msg, 40, 2.0, (0, 0, 255), 3)
-        cv2.imshow(WINDOW, img)
-        cv2.waitKey(1)
+    def run_bg(label, work, done):
+        """work() 在背景執行，完成後 done(結果) 回到主迴圈執行 (例外時結果為 None)"""
+        def worker():
+            try:
+                result = work()
+            except Exception as e:
+                print(f"[{label}] 失敗: {e}")
+                result = None
+            ui_tasks.put(lambda: done(result))
+        bg['busy'] = label
+        threading.Thread(target=worker, daemon=True).start()
+
+    def ask(prompt, done):
+        """在終端機問問題但不卡畫面"""
+        print("👉 請點一下終端機視窗再輸入")
+        run_bg('WAITING CONSOLE INPUT', lambda: input(prompt).strip(), lambda ans: done(ans or ''))
 
     def start_scan(then_auto):
         """背景執行：手臂依序到各排拍照點 -> 手牌鏡頭拍照 -> Gemini 辨識 -> 回初始點"""
@@ -279,17 +295,23 @@ def main():
         print("[系統] 📷 開始拍照辨識手牌...")
         threading.Thread(target=worker, daemon=True).start()
 
-    def lock_hand(names):
+    def lock_hand(names, then=None):
         ids = [get_card_id(n) for n in names]
-        first = None
-        if 1 not in ids:
-            ans = input("你沒有梅花3，是誰有梅花3? (輸入 2/3/4): ").strip()
-            first = int(ans) - 1 if ans in ('2', '3', '4') else 1
-        game.lock_hand(ids, first)
-        print("[系統] 手牌已鎖定:")
-        for s, c in game.slots.items():
-            print(f"   第 {s:2d} 格 -> {id_to_card_name(c)}")
-        print(f"[系統] 由 P{game.current_turn_player+1} 先出")
+
+        def finish(ans):
+            first = int(ans) - 1 if ans in ('2', '3', '4') else (None if 1 in ids else 1)
+            game.lock_hand(ids, first)
+            print("[系統] 手牌已鎖定:")
+            for s, c in game.slots.items():
+                print(f"   第 {s:2d} 格 -> {id_to_card_name(c)}")
+            print(f"[系統] 由 P{game.current_turn_player+1} 先出")
+            if then:
+                then()
+
+        if 1 in ids:
+            finish('')
+        else:
+            ask("你沒有梅花3，是誰有梅花3? (輸入 2/3/4): ", finish)
 
     def enable_auto():
         nonlocal auto_mode, need_rebaseline
@@ -338,23 +360,27 @@ def main():
             print("[系統] 手臂無法執行，自動模式已關閉")
 
     def check_play_zone(frame):
-        """出牌區有變化時呼叫 Gemini，找出對手新打出的牌"""
-        show_busy(frame, "Gemini: reading play area...")
-        try:
-            names = reader.read_played(frame)
-        except Exception as e:
-            print(f"[Gemini] 呼叫失敗: {e}")
-            return
-        seen = {get_card_id(n) for n in names} - {None}
-        new_ids = seen - game.played_history - game.hand_cards()
-        print(f"[Gemini] 出牌區: {names_str(seen)} -> 新的牌: {names_str(new_ids) or '(無)'}")
-        if not new_ids:
-            return
-        if not (1 <= len(new_ids) <= 5) or not game.is_legal_play(new_ids):
-            print(f"[警告] {names_str(new_ids)} 不是合法出牌，可能辨識錯誤；"
-                  f"請整理牌後再放一次，或按 P + Enter 手動輸入")
-            return
-        game.opponent_play(new_ids)
+        """出牌區有變化時呼叫 Gemini (背景)，找出對手新打出的牌"""
+        turn = game.current_turn_player
+
+        def done(names):
+            if names is None:
+                return
+            if game.current_turn_player != turn or not auto_mode:
+                print("[Gemini] 等結果的期間狀態變了 (手動 Pass / 關閉全自動)，忽略這次結果")
+                return
+            seen = {get_card_id(n) for n in names} - {None}
+            new_ids = seen - game.played_history - game.hand_cards()
+            print(f"[Gemini] 出牌區: {names_str(seen)} -> 新的牌: {names_str(new_ids) or '(無)'}")
+            if not new_ids:
+                return
+            if not (1 <= len(new_ids) <= 5) or not game.is_legal_play(new_ids):
+                print(f"[警告] {names_str(new_ids)} 不是合法出牌，可能辨識錯誤；"
+                      f"請整理牌後再放一次，或按 P + Enter 手動輸入")
+                return
+            game.opponent_play(new_ids)
+
+        run_bg('GEMINI READING PLAY AREA', lambda: reader.read_played(frame), done)
 
     print("--- 大老二 AI + 機器手臂 ---")
     print("[A] 全自動模式 開/關 (拍照辨識手牌、自動偵測對手出牌、輪到你時手臂自動出牌)")
@@ -368,15 +394,19 @@ def main():
             frame = blank.copy()
             put_text(frame, "PLAY CAM: no image", 400, 3.0, (0, 0, 255), 3)
 
+        # --- 背景工作 (Gemini / 終端機輸入) 完成後的處理 ---
+        while not ui_tasks.empty():
+            bg['busy'] = None
+            ui_tasks.get()()
+
         # --- 手牌辨識結果 (背景執行緒完成後) ---
         if scan['result'] is not None:
             names, ok = scan['result']
             scan['result'] = None
             if names is not None:
                 if ok and scan['then_auto']:
-                    lock_hand(names)
                     pending_hand = None
-                    enable_auto()
+                    lock_hand(names, then=enable_auto)
                 else:
                     pending_hand = names
                     print("[系統] 確認無誤請按 Y" if ok else "[系統] 請按 E 修正後按 Y，或再按 H 重拍")
@@ -388,7 +418,7 @@ def main():
             need_rebaseline = False
 
         # --- 全自動流程 ---
-        if auto_mode and not robot.busy and not need_rebaseline and not game.game_over:
+        if auto_mode and not robot.busy and not need_rebaseline and not bg['busy'] and not game.game_over:
             if game.current_turn_player == 0:
                 play_my_turn()
             elif watcher.update(frame):
@@ -405,6 +435,8 @@ def main():
         draw_roi(view, PLAY_ROI, (255, 200, 0))
         slot_str = " ".join(f"{s}:{id_to_card_name(c) if c else '--'}" for s, c in game.slots.items())
         mode = 'SCANNING HAND' if scan['running'] else ('AUTO' if auto_mode else 'MANUAL')
+        if bg['busy']:
+            mode += f" | {bg['busy']}..."
         y = 30
         clamp = 'CLOSED' if robot.clamps_closed else 'OPEN'
         put_text(view, f"MODE: {mode} | ARM: {robot.status} | CLAMP: {clamp}", y, 1.2, (255, 0, 255), 2); y += 30
@@ -443,8 +475,8 @@ def main():
             robot.resume_live()
             print("[系統] 已解除緊急停止，手臂回到跟隨示範臂模式")
 
-        elif robot.busy or scan['running']:
-            continue  # 手臂動作 / 拍照辨識中只接受 S / Q
+        elif robot.busy or scan['running'] or bg['busy']:
+            continue  # 手臂動作 / 拍照辨識 / 等 Gemini 或終端機輸入時只接受 S / Q
 
         elif key == ord('a'):  # 全自動開關
             if auto_mode:
@@ -458,21 +490,24 @@ def main():
         elif key == ord('h'):
             start_scan(then_auto=False)
 
-        elif key == ord('e'):  # 手動修改某一格 (會暫停畫面等待輸入)
+        elif key == ord('e'):  # 手動修改某一格 (在終端機輸入，畫面不會卡住)
             if pending_hand is None:
                 pending_hand = [id_to_card_name(c) if c else '??' for c in game.slots.values()]
-            txt = input("輸入要修改的格子與牌名，例如 5=SA (可用空白分隔多筆): ").strip()
-            for item in txt.split():
-                try:
-                    s, n = item.split('=')
-                    s = int(s)
-                    if 1 <= s <= NUM_SLOTS and get_card_id(n):
-                        pending_hand[s-1] = n.upper().replace('10', 'T')
-                    else:
-                        print(f"[警告] 無效輸入: {item}")
-                except ValueError:
-                    print(f"[警告] 格式錯誤: {item}")
-            print(f"[系統] 待確認手牌: {pending_hand}，按 Y 確認")
+
+            def apply_edit(txt):
+                for item in txt.split():
+                    try:
+                        s, n = item.split('=')
+                        s = int(s)
+                        if 1 <= s <= NUM_SLOTS and get_card_id(n):
+                            pending_hand[s-1] = n.upper().replace('10', 'T')
+                        else:
+                            print(f"[警告] 無效輸入: {item}")
+                    except ValueError:
+                        print(f"[警告] 格式錯誤: {item}")
+                print(f"[系統] 待確認手牌: {pending_hand}，按 Y 確認")
+
+            ask("輸入要修改的格子與牌名，例如 5=SA (可用空白分隔多筆): ", apply_edit)
 
         elif key == ord('y'):
             if pending_hand is None:
@@ -485,15 +520,15 @@ def main():
             lock_hand(pending_hand)
             pending_hand = None
 
-        elif key == ord('p'):  # 手動: Gemini 辨識對手出的牌
-            show_busy(frame, "Gemini: reading played cards...")
-            try:
-                names = reader.read_played(frame)
-            except Exception as e:
-                print(f"[Gemini] 呼叫失敗: {e}")
-                continue
-            temp_buffer = {get_card_id(n) for n in names} - {None} - game.played_history
-            print(f"[Gemini] 對手出牌: {names_str(temp_buffer)} (按 Enter 提交，C 清空)")
+        elif key == ord('p'):  # 手動: Gemini 辨識對手出的牌 (背景)
+            def got_played(names):
+                nonlocal temp_buffer
+                if names is None:
+                    return
+                temp_buffer = {get_card_id(n) for n in names} - {None} - game.played_history
+                print(f"[Gemini] 對手出牌: {names_str(temp_buffer)} (按 Enter 提交，C 清空)")
+
+            run_bg('GEMINI READING PLAY AREA', lambda f=frame: reader.read_played(f), got_played)
 
         elif key == 32:  # Space: 對手 Pass
             if game.current_turn_player == 0:

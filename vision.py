@@ -76,6 +76,8 @@ class Camera:
         self.name = name
         backend = cv2.CAP_DSHOW if sys.platform == 'win32' else cv2.CAP_ANY
         self.cap = cv2.VideoCapture(index, backend)
+        # MJPG 壓縮：兩顆 USB 鏡頭同時跑 1280x720 未壓縮畫面時頻寬不夠，會卡頓
+        self.cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*'MJPG'))
         self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, CAMERA_WIDTH)
         self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, CAMERA_HEIGHT)
         self.ok = self.cap.isOpened()
@@ -91,13 +93,20 @@ class Camera:
 
     def _loop(self):
         while self._running:
-            ret, frame = self.cap.read()
-            if ret:
+            try:
+                ret, frame = self.cap.read()
+            except cv2.error:
+                ret, frame = False, None
+            if ret and frame is not None and frame.size > 0:
                 with self._lock:
                     self._frame = frame
                     self._frame_time = time.time()
             else:
                 time.sleep(0.01)
+
+    def age(self):
+        """距離上一張新畫面幾秒 (鏡頭卡住或被拔掉時會一直變大)"""
+        return time.time() - self._frame_time if self._frame_time else float('inf')
 
     def read(self):
         """最新畫面 (可能為 None)"""

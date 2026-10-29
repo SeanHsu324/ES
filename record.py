@@ -61,6 +61,8 @@ class Preview:
         if frame is None:
             return
         view = frame.copy()
+        if cam.age() > 2:
+            put_text(view, f"NO NEW FRAME {cam.age():.0f}s", view.shape[0] // 2, 3.0, (0, 0, 255), 4)
         h, w = view.shape[:2]
         draw_roi(view, roi, (0, 255, 0))
         cv2.line(view, (w // 2, 0), (w // 2, h), (80, 80, 80), 1)   # 中線，方便對準
@@ -71,10 +73,20 @@ class Preview:
         cv2.imshow(title, cv2.resize(view, (640, int(h * scale))))
 
     def _loop(self):
+        # 不管發生什麼錯誤都要繼續呼叫 waitKey，否則視窗停止更新、Windows 會顯示「沒有回應」
+        errors = 0
         while self._running:
-            self._show(self.hand_cam, HAND_ROI, "HAND CAM")
-            self._show(self.play_cam, PLAY_ROI, "PLAY CAM")
-            cv2.waitKey(30)
+            for cam, roi, title in ((self.hand_cam, HAND_ROI, "HAND CAM"), (self.play_cam, PLAY_ROI, "PLAY CAM")):
+                try:
+                    self._show(cam, roi, title)
+                except Exception as e:
+                    errors += 1
+                    if errors <= 3:
+                        print(f"\n[預覽] {title} 畫面更新錯誤 (已略過): {e}")
+            try:
+                cv2.waitKey(30)
+            except Exception:
+                time.sleep(0.03)
 
     def close(self):
         self._running = False
