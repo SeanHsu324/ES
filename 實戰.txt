@@ -1,3 +1,4 @@
+10/30
 PS C:\Users\User\Desktop\ES> (Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned) ; (& c:\Users\User\Desktop\ES\venv\Scripts\Activate.ps1)
 (venv) PS C:\Users\User\Desktop\ES> & c:\Users\User\Desktop\ES\venv\Scripts\python.exe c:/Users/User/Desktop/ES/main.py
 [手臂] 正在連接 ESP32 (COM15)...
