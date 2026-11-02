@@ -31,7 +31,8 @@ from vision import (
 MOTION_THRESH = 4.0        # 相鄰兩幀平均差異 > 此值 = 有東西在動 (手伸進來)
 CHANGE_THRESH = 10.0       # 穩定後與上次基準差異 > 此值 = 桌面真的變了 -> 呼叫 Gemini
 STABLE_SEC = 1.0           # 畫面需靜止多久才判定放好牌了
-PASS_TIMEOUT_SEC = 15.0    # 對手回合出牌區這麼久沒變化 -> 視為 Pass (也可按 Space 手動 Pass)
+PASS_TIMEOUT_SEC = 15.0    # 對手回合出牌區這麼久沒變化 -> 視為 Pass；設 None = 只用 PASS 按鈕 / Space
+PASS_BUTTON_DEBOUNCE_SEC = 0.5   # PASS 按鈕連按的最短間隔 (避免一次按壓算兩次 Pass)
 ARM_SETTLE_SEC = 1.0       # 手臂動作結束後等一下再重設基準畫面
 
 # 每打出一張牌要依序播放的動作，每張牌丟完都回初始點
@@ -382,10 +383,34 @@ def main():
 
         run_bg('GEMINI READING PLAY AREA', lambda: reader.read_played(frame), done)
 
+    # 啟動就移到初始點並停住 (不跟隨示範臂)
+    if robot.has_action(HOME):
+        print("[手臂] 移到初始點...")
+        robot.run_sequence([HOME], return_home=False)
+    else:
+        print("[警告] 還沒有初始點 (actions/home.json)，請先用 record.py 輸入 h 設定")
+
+    last_pass_button = [0.0]
+
+    def opponent_pass_now(source):
+        """對手 Pass (Space 鍵或 PASS 按鈕)"""
+        nonlocal temp_buffer
+        if not game.hand_locked:
+            print(f"[{source}] 還沒開局，忽略")
+            return
+        if game.current_turn_player == 0:
+            print(f"[{source}] 現在是你的回合，忽略")
+            return
+        print(f"[{source}] P{game.current_turn_player+1} Pass")
+        game.opponent_pass()
+        temp_buffer = set()
+        if auto_mode:
+            watcher.rebaseline(frame)
+
     print("--- 大老二 AI + 機器手臂 ---")
     print("[A] 全自動模式 開/關 (拍照辨識手牌、自動偵測對手出牌、輪到你時手臂自動出牌)")
-    print("手動: [H]拍照辨識手牌 [Y]確認 [E]修改格子 [P]辨識對手出牌 [Enter]提交/AI出牌 [Space]對手Pass")
-    print("[O]排夾 開/關  [C]清空緩衝 [R]重設(排夾打開) [S]緊急停止 [G]解除停止(回到跟隨示範臂) [Q]離開")
+    print("手動: [H]拍照辨識手牌 [Y]確認 [E]修改格子 [P]辨識對手出牌 [Enter]提交/AI出牌 [Space / PASS按鈕]對手Pass")
+    print("[O]排夾 開/關  [C]清空緩衝 [R]重設(排夾打開) [S]緊急停止 [G]解除停止並回初始點 [Q]離開")
 
     blank = np.zeros((720, 1280, 3), dtype=np.uint8)
     while True:
@@ -398,6 +423,17 @@ def main():
         while not ui_tasks.empty():
             bg['busy'] = None
             ui_tasks.get()()
+
+        # --- PASS 按鈕 ---
+        while not robot.button_events.empty():
+            t_press = robot.button_events.get()
+            if t_press - last_pass_button[0] < PASS_BUTTON_DEBOUNCE_SEC:
+                continue
+            last_pass_button[0] = t_press
+            if robot.busy or scan['running'] or bg['busy'] == 'WAITING CONSOLE INPUT':
+                print("[PASS 按鈕] 手臂動作 / 拍照 / 等輸入中，忽略")
+            else:
+                opponent_pass_now("PASS 按鈕")   # 正在等的 Gemini 結果會因為換人而自動忽略
 
         # --- 手牌辨識結果 (背景執行緒完成後) ---
         if scan['result'] is not None:
@@ -423,7 +459,8 @@ def main():
                 play_my_turn()
             elif watcher.update(frame):
                 check_play_zone(frame)
-            elif (time.time() - game.turn_started_at > PASS_TIMEOUT_SEC
+            elif (PASS_TIMEOUT_SEC is not None
+                  and time.time() - game.turn_started_at > PASS_TIMEOUT_SEC
                   and watcher.idle_seconds() > PASS_TIMEOUT_SEC):
                 print(f"[系統] P{game.current_turn_player+1} {PASS_TIMEOUT_SEC:.0f} 秒沒出牌，視為 Pass")
                 game.opponent_pass()
@@ -448,7 +485,7 @@ def main():
         if temp_buffer:
             put_text(view, f"BUFFER: {names_str(temp_buffer)}", y, 1.0, (200, 200, 200), 1); y += 30
         turn_info = f"TURN: P{game.current_turn_player+1} | PASS: {game.pass_count} | OPP: {game.others_count}"
-        if auto_mode and game.current_turn_player != 0:
+        if auto_mode and game.current_turn_player != 0 and PASS_TIMEOUT_SEC is not None:
             left = PASS_TIMEOUT_SEC - min(time.time() - game.turn_started_at, watcher.idle_seconds())
             turn_info += f" | auto-pass in {max(0, left):.0f}s"
         put_text(view, turn_info, y, 1.0, (255, 255, 255), 1); y += 35
@@ -472,8 +509,10 @@ def main():
             auto_mode = False
 
         elif key == ord('g'):
-            robot.resume_live()
-            print("[系統] 已解除緊急停止，手臂回到跟隨示範臂模式")
+            robot.hold()
+            print("[系統] 已解除緊急停止，回到初始點 (不跟隨示範臂)")
+            if robot.has_action(HOME):
+                robot.run_sequence([HOME], return_home=False)
 
         elif robot.busy or scan['running'] or bg['busy']:
             continue  # 手臂動作 / 拍照辨識 / 等 Gemini 或終端機輸入時只接受 S / Q
@@ -531,13 +570,7 @@ def main():
             run_bg('GEMINI READING PLAY AREA', lambda f=frame: reader.read_played(f), got_played)
 
         elif key == 32:  # Space: 對手 Pass
-            if game.current_turn_player == 0:
-                print("[警告] 現在是你的回合")
-                continue
-            game.opponent_pass()
-            temp_buffer.clear()
-            if auto_mode:
-                watcher.rebaseline(frame)
+            opponent_pass_now("Space")
 
         elif key == ord('o'):  # 手動開關排夾
             if auto_mode:

@@ -276,6 +276,7 @@ HELP = f"""
 
 def main():
     robot = RobotArm(COM_PORT)
+    robot.on_button = lambda: print("\n🔘 PASS 按鈕被按下 (接線正常)")
     preview = Preview(robot)
     print(HELP)
 

@@ -10,6 +10,7 @@ import os
 import json
 import time
 import threading
+import queue
 
 import numpy as np
 
@@ -69,6 +70,9 @@ class RobotArm:
         self._state_event = threading.Event()
         self._warned_no_state = False
         self._ready = False                 # 收過開機 READY 之後再看到 = ESP32 重新開機
+        # PASS 按鈕 (韌體送 BTN:PASS)：有設 on_button 就直接呼叫，否則放進佇列給 main.py 取
+        self.on_button = None
+        self.button_events = queue.Queue(maxsize=20)
         self.last_ok = True                 # 最近一次 run_sequence 是否成功
 
         if port is None:
@@ -110,6 +114,14 @@ class RobotArm:
                     print(f"\n[ESP32 回報] {line}")
                 elif line.startswith("ERR"):
                     print(f"\n[ESP32 錯誤] {line}")
+                elif line == "BTN:PASS":
+                    if self.on_button:
+                        self.on_button()
+                    else:
+                        try:
+                            self.button_events.put_nowait(time.time())
+                        except queue.Full:
+                            pass
                 elif line == "READY" and self._ready:
                     # 執行中突然重新開機，通常是伺服馬達瞬間電流太大、電源電壓不足
                     print("\n[手臂] ⚠️ ESP32 重新開機了 (可能是電源不足)，目前動作已中止")
@@ -158,6 +170,15 @@ class RobotArm:
         self.mode = 'stopped'
         self.status = "STOPPED"
         print("[手臂] ⛔ 緊急停止")
+
+    def hold(self):
+        """解除緊急停止，但停在原位、不跟隨示範臂 (之後用 run_sequence 移動)"""
+        self.abort.clear()
+        if self.ser is not None:
+            self.ser.write(b"h\n")
+        self.mode = 'playback'
+        self.status = "Idle"
+        time.sleep(0.1)
 
     # 舊名稱相容
     resume_live = live

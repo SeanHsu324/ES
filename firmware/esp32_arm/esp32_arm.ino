@@ -8,6 +8,7 @@
 //   P,j1,j2,j3,j4,j5,j6  播放模式：直接設定六軸角度 (格式錯誤會被拒絕)
 //   s / stop             緊急停止：手臂停在原地，忽略所有 P 指令
 //   r / run              解除停止並回到即時連動 (從手臂跟隨示範臂)
+//   h / hold             解除停止但停在原位 (播放模式，不跟隨示範臂；main.py 用)
 //   C,j7,j8              排夾角度 (J7 第一排、J8 第二排)
 //   C,OPEN / C,CLOSE     排夾全開 / 全關 (開機預設全開)
 //   ?                    查詢狀態，回傳 STATE,<模式>,j1,...,j6,j7,j8
@@ -19,6 +20,7 @@
 //   STATUS:CLAMP,j7,j8           排夾動作完成回報
 //   STATUS:<模式>                模式切換時回報
 //   ERR:<原因>                   指令被拒絕
+//   BTN:PASS                     PASS 按鈕被按下 (自回彈按鈕接 GPIO 27 與 GND)
 // =====================================================================
 
 // 建立 PCA9685 物件 (預設 I2C 位址 0x40)
@@ -33,6 +35,10 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver(0x40);
 #define PLAYBACK_MAX_STEP 10  // 播放模式：每個封包 J1~J5 最多變化角度 (防止錯誤封包讓手臂暴衝)
 #define LOOP_INTERVAL_MS 20   // 即時連動更新週期 (50Hz)
 #define RX_MAX_LEN 64
+
+// PASS 按鈕 (自回彈)：一腳接 PASS_BUTTON_PIN，另一腳接 GND，使用內建上拉電阻
+#define PASS_BUTTON_PIN 27
+#define BUTTON_DEBOUNCE_MS 30
 
 // 排夾 (手牌架第一排 J7、第二排 J8)，接在 PCA9685 通道 6、7
 const int CLAMP_CH[2]    = {6, 7};
@@ -68,6 +74,9 @@ bool isEmergencyStop = false;   // 緊急停止狀態
 bool isPlaybackMode = false;    // 是否為 Python 播放/遠端控制模式
 bool stopRejectReported = false;
 unsigned long lastUpdate = 0;
+int buttonStable = HIGH;          // 去彈跳後的按鈕狀態 (HIGH = 放開)
+int buttonLastRaw = HIGH;
+unsigned long buttonChangedAt = 0;
 String rxBuffer;
 
 int angleToPulse(int angle) {
@@ -209,6 +218,11 @@ void handleCommand(String input) {
     reseedFilters();
     Serial.println("STATUS:RUNNING");
   }
+  else if (input.equalsIgnoreCase("h") || input.equalsIgnoreCase("hold")) {
+    isEmergencyStop = false;
+    isPlaybackMode = true;   // 停在目前輸出的角度，等 Python 送 P 指令
+    Serial.println("STATUS:PLAYBACK");
+  }
   else if (input == "?") {
     sendState();
   }
@@ -237,6 +251,22 @@ void readSerial() {
         rxBuffer = "";
         Serial.println("ERR:LINE_TOO_LONG");
       }
+    }
+  }
+}
+
+// PASS 按鈕：放開 -> 按下 (穩定超過去彈跳時間) 時送出一次 BTN:PASS
+void checkPassButton() {
+  int raw = digitalRead(PASS_BUTTON_PIN);
+  unsigned long now = millis();
+  if (raw != buttonLastRaw) {
+    buttonLastRaw = raw;
+    buttonChangedAt = now;
+  }
+  if (raw != buttonStable && now - buttonChangedAt >= BUTTON_DEBOUNCE_MS) {
+    buttonStable = raw;
+    if (buttonStable == LOW) {
+      Serial.println("BTN:PASS");
     }
   }
 }
@@ -292,6 +322,7 @@ void setup() {
   pwm.setPWMFreq(50);
   delay(100);
 
+  pinMode(PASS_BUTTON_PIN, INPUT_PULLUP);
   writeClamps(CLAMP_OPEN);   // 排夾預設開啟，方便插牌
   reseedFilters();
   rxBuffer.reserve(RX_MAX_LEN + 1);
@@ -302,6 +333,7 @@ void setup() {
 void loop() {
   // 1. 處理指令 (任何模式都會處理，緊急停止也能收到 r / ?)
   readSerial();
+  checkPassButton();   // 任何模式都偵測 (緊急停止中也回報，由 Python 決定要不要理)
 
   // 2. 緊急停止或播放模式：手臂保持在最後的角度，不讀示範臂
   if (isEmergencyStop || isPlaybackMode) return;
