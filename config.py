@@ -123,6 +123,8 @@ DISCORD_BACKEND_CHANNEL_ID = 1567535190211829822   # 後臺：系統訊息、指
 DISCORD_GAME_CHANNEL_ID = 1567535349456961647      # 牌局對話：公開的出牌紀錄 (開新局時會清空)
 # 能用控制指令的人：擁有這個身分組 (或使用者 ID 剛好是這個) 的成員
 DISCORD_OWNER_IDS = {1567531351337345044}
+# 牌局頻道「輪到誰」下面的 Pass 按鈕：False = 只有主人能按；True = 頻道裡所有人都能按
+DISCORD_PASS_BUTTON_ANYONE = False
 
 # --- 觀眾顯示 (外接螢幕：紅黃綠狀態燈 + 牌局畫面 + 出牌區鏡頭) ---
 TABLE_FULLSCREEN = not IS_WINDOWS   # 樹莓派預設全螢幕；Windows 開一般視窗方便測試

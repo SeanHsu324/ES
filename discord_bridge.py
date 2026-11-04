@@ -17,6 +17,7 @@ from discord import app_commands
 
 from config import (
     DISCORD_TOKEN, DISCORD_BACKEND_CHANNEL_ID, DISCORD_GAME_CHANNEL_ID, DISCORD_OWNER_IDS, NUM_SLOTS,
+    DISCORD_PASS_BUTTON_ANYONE,
 )
 
 LOG_FLUSH_SEC = 2.0
@@ -56,6 +57,8 @@ class DiscordBridge:
         self._log_buf = []
         self.loop = None
         self.client = None
+        self._game_q = None           # 牌局頻道的訊息依序送 (避免「輪到誰」跑到出牌訊息前面)
+        self._turn_msg = None         # 目前帶著 Pass 按鈕的那則訊息
 
     # ================= 給主執行緒用 =================
     def start(self):
@@ -71,7 +74,18 @@ class DiscordBridge:
 
     def post_game(self, text):
         """送一則訊息到牌局頻道 (公開)"""
-        self._post(DISCORD_GAME_CHANNEL_ID, text)
+        self._enqueue_game(('text', text))
+
+    def post_turn(self, text, turn_id, with_button):
+        """公告輪到誰；with_button = 附上 Pass 按鈕 (上一則的按鈕會自動拿掉)"""
+        self._enqueue_game(('turn', text, turn_id, with_button))
+
+    def clear_turn_button(self):
+        self._enqueue_game(('clear',))
+
+    def _enqueue_game(self, item):
+        if self.connected and self.loop and self._game_q is not None:
+            self.loop.call_soon_threadsafe(self._game_q.put_nowait, item)
 
     def post_backend(self, text):
         self._post(DISCORD_BACKEND_CHANNEL_ID, text)
@@ -114,6 +128,42 @@ class DiscordBridge:
             return await asyncio.wait_for(fut, timeout=15)
         except asyncio.TimeoutError:
             return "⏳ 主程式忙碌中，指令已排入，稍後會執行"
+
+    def can_press_pass(self, inter):
+        if DISCORD_PASS_BUTTON_ANYONE:
+            return True
+        ids = {inter.user.id} | {r.id for r in getattr(inter.user, 'roles', [])}
+        return bool(ids & DISCORD_OWNER_IDS)
+
+    async def _drop_turn_button(self):
+        msg, self._turn_msg = self._turn_msg, None
+        if msg is not None:
+            try:
+                await msg.edit(view=None)
+            except discord.HTTPException:
+                pass        # 訊息已被刪除 (例如 /newgame 清空頻道)
+
+    async def _game_sender(self):
+        while True:
+            item = await self._game_q.get()
+            ch = self.client.get_channel(DISCORD_GAME_CHANNEL_ID)
+            if ch is None:
+                continue
+            try:
+                if item[0] == 'text':
+                    for chunk in _chunks(item[1]):
+                        await ch.send(chunk)
+                elif item[0] == 'turn':
+                    _, text, turn_id, with_button = item
+                    await self._drop_turn_button()
+                    if with_button:
+                        self._turn_msg = await ch.send(text, view=PassView(self, turn_id))
+                    else:
+                        await ch.send(text)
+                elif item[0] == 'clear':
+                    await self._drop_turn_button()
+            except Exception as e:
+                _err(f"送出牌局訊息失敗：{e}")
 
     async def _flush_logs(self):
         while True:
@@ -167,6 +217,8 @@ class DiscordBridge:
             print(f"[Discord] {client.user} 已上線，同步了 {len(synced)} 個 / 指令到「{guild.name}」")
             if not getattr(self, '_flusher', None):
                 self._flusher = asyncio.create_task(self._flush_logs())
+                self._game_q = asyncio.Queue()
+                self._sender = asyncio.create_task(self._game_sender())
 
         await client.start(DISCORD_TOKEN)
 
@@ -197,6 +249,7 @@ class DiscordBridge:
                 try:
                     deleted = await game_ch.purge(limit=None)
                     cleared = len(deleted)
+                    bridge._turn_msg = None
                 except discord.Forbidden:
                     await inter.followup.send("⚠️ 機器人沒有「管理訊息」權限，無法清空牌局頻道", ephemeral=True)
             result = await bridge._call("newgame")
@@ -235,11 +288,6 @@ class DiscordBridge:
         @owner_only()
         async def auto(inter: discord.Interaction, on: bool):
             await reply(inter, "auto", on=on)
-
-        @tree.command(name="pass", description="現在輪到的對手 Pass")
-        @owner_only()
-        async def pass_cmd(inter: discord.Interaction):
-            await reply(inter, "pass")
 
         @tree.command(name="read", description="辨識出牌區 (手動模式)")
         @owner_only()
@@ -287,6 +335,27 @@ class DiscordBridge:
         @owner_only()
         async def shutdown(inter: discord.Interaction):
             await reply(inter, "shutdown")
+
+
+class PassView(discord.ui.View):
+    """「輪到 Px」訊息下面的 Pass 按鈕"""
+
+    def __init__(self, bridge, turn_id):
+        super().__init__(timeout=None)
+        self.bridge = bridge
+        self.turn_id = turn_id
+        button = discord.ui.Button(label="Pass", emoji="✋", style=discord.ButtonStyle.secondary,
+                                   custom_id=f"bigtwo_pass:{turn_id}")
+        button.callback = self.on_click
+        self.add_item(button)
+
+    async def on_click(self, inter: discord.Interaction):
+        if not self.bridge.can_press_pass(inter):
+            await inter.response.send_message("⛔ 只有主人可以按 Pass", ephemeral=True)
+            return
+        await inter.response.defer(ephemeral=True, thinking=True)
+        result = await self.bridge._call("pass_button", turn_id=self.turn_id)
+        await inter.followup.send(result, ephemeral=True)
 
 
 def _chunks(text, size=MAX_MSG):

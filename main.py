@@ -137,6 +137,7 @@ class BigTwoGame:
         self.game_over = False
         self.winner = None
         self.turn_started_at = time.time()
+        self.turn_seq = 0             # 每換一次人 +1 (Discord Pass 按鈕用來判斷是不是過期)
 
     def _emit(self, *event):
         if self.on_event:
@@ -165,6 +166,7 @@ class BigTwoGame:
     def _next_turn(self, player):
         self.current_turn_player = player
         self.turn_started_at = time.time()
+        self.turn_seq += 1
 
     def lock_hand(self, ids, first_player=None):
         self.slots = {i + 1: cid for i, cid in enumerate(ids)}
@@ -453,6 +455,7 @@ def main():
         if robot.busy or st['scan_running']:
             return "⚠️ 手臂動作中，請稍後再開新局"
         game.reset()
+        announced['seq'] = None
         st.update(auto=False, pending_hand=None, pending_first=None, buffer=set())
         robot.open_clamps()
         print("[系統] 🆕 新局：狀態已重設、排夾已打開")
@@ -512,10 +515,13 @@ def main():
             return "✅ 全自動模式關閉"
         return cmd_start()
 
-    def cmd_pass():
+    def cmd_pass_button(turn_id):
+        """牌局頻道「輪到 Px」下面的 Pass 按鈕"""
+        if turn_id != game.turn_seq or game.game_over:
+            return "⌛ 這個按鈕已經過期 (已經換人了)"
         if robot.busy or st['scan_running']:
-            return "⚠️ 手臂動作中，忽略"
-        return opponent_pass_now("Discord")
+            return "⚠️ 手臂動作中，請稍後再按"
+        return opponent_pass_now("Discord 按鈕")
 
     def cmd_read():
         b = busy_reason()
@@ -611,7 +617,7 @@ def main():
 
     handlers = {
         'newgame': cmd_newgame, 'start': cmd_start, 'first': cmd_first, 'scan': cmd_scan,
-        'fix': cmd_fix, 'confirm': cmd_confirm, 'auto': cmd_auto, 'pass': cmd_pass,
+        'fix': cmd_fix, 'confirm': cmd_confirm, 'auto': cmd_auto, 'pass_button': cmd_pass_button,
         'read': cmd_read, 'submit': cmd_submit, 'aiplay': cmd_aiplay, 'stop': cmd_stop,
         'resume': cmd_resume, 'clamp': cmd_clamp, 'status': cmd_status, 'swapcam': cmd_swapcam,
         'shutdown': cmd_shutdown,
@@ -637,6 +643,20 @@ def main():
     print("--- 大老二 AI + 機器手臂 (用 Discord / 指令控制；觀眾畫面按 Esc 可緊急停止) ---")
     last_pass_button = 0.0
     last_draw = 0.0
+    announced = {'seq': None}
+
+    def announce_turn():
+        """換人了就在牌局頻道公告輪到誰；輪到對手時附 Pass 按鈕"""
+        if not game.hand_locked or game.game_over:
+            if game.game_over and announced['seq'] is not None:
+                bridge.clear_turn_button()
+                announced['seq'] = None
+            return
+        if game.turn_seq == announced['seq']:
+            return
+        announced['seq'] = game.turn_seq
+        p = game.current_turn_player
+        bridge.post_turn(f"👉 輪到 **{PLAYER_NAMES[p]}**", game.turn_seq, with_button=(p != 0))
 
     while st['running']:
         frame = cams['play'].read()
@@ -694,6 +714,8 @@ def main():
                     game.opponent_pass()
                 if game.game_over:
                     st['auto'] = False
+
+        announce_turn()
 
         # --- 觀眾畫面 (只顯示公開資訊) ---
         now = time.time()
