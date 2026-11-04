@@ -14,7 +14,7 @@ import queue
 
 import numpy as np
 
-from config import CLAMP_OPEN, CLAMP_CLOSED, CLAMP_SETTLE_SEC
+from config import CLAMP_OPEN, CLAMP_CLOSED, CLAMP_SETTLE_SEC, I2C_BUS, PCA9685_ADDR, PASS_BUTTON_GPIO
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ACTIONS_DIR = os.path.join(BASE_DIR, 'actions')
@@ -51,6 +51,23 @@ def trim_idle(frames, tol=IDLE_TOL_DEG):
     return [frames[0]] + frames[start:end + 1] + [frames[-1]]
 
 
+# ESP32 開發板常見的 USB 轉序列晶片 (VID)
+_ESP32_USB_VIDS = {0x1A86: 'CH340', 0x10C4: 'CP210x', 0x303A: 'ESP32 USB', 0x0403: 'FTDI'}
+
+
+def find_esp32_port():
+    """自動找 ESP32 的序列埠 (Windows: COMx，樹莓派: /dev/ttyUSBx)，找不到回傳 None"""
+    from serial.tools import list_ports
+    ports = list(list_ports.comports())
+    for p in ports:
+        if p.vid in _ESP32_USB_VIDS:
+            return p.device
+    for p in ports:   # 沒有認得的晶片，退而求其次找 USB 序列埠
+        if 'USB' in p.device or 'ACM' in p.device:
+            return p.device
+    return None
+
+
 class RobotArm:
     def __init__(self, port, baud=BAUD_RATE):
         os.makedirs(ACTIONS_DIR, exist_ok=True)
@@ -74,19 +91,38 @@ class RobotArm:
         self.on_button = None
         self.button_events = queue.Queue(maxsize=20)
         self.last_ok = True                 # 最近一次 run_sequence 是否成功
+        self.is_pi = False                  # True = 樹莓派直接用 I2C 驅動 PCA9685 (沒有 ESP32 / 示範臂)
 
+        if port == 'auto':
+            port = find_esp32_port()
+            if port is None:
+                print("[手臂] ⚠️ 找不到 ESP32 (USB 有插好嗎？)，改用模擬模式，手臂不會動")
         if port is None:
             print("[手臂] 模擬模式 (未連接 ESP32)")
             return
-        import serial
-        print(f"[手臂] 正在連接 ESP32 ({port})...")
-        self.ser = serial.Serial(port, baud, timeout=1)
-        time.sleep(2)  # 等待 ESP32 重啟就緒
+        if port == 'i2c':
+            from pi_servo import PiServoLink
+            print(f"[手臂] 樹莓派 I2C 直接驅動 PCA9685 (bus {I2C_BUS}, 位址 0x{PCA9685_ADDR:02X})...")
+            try:
+                self.ser = PiServoLink(I2C_BUS, PCA9685_ADDR, PASS_BUTTON_GPIO)
+            except OSError as e:
+                print(f"[手臂] ❌ 找不到 PCA9685 ({e})。I2C 有開嗎？接線對嗎？(i2cdetect -y {I2C_BUS})，改用模擬模式")
+                return
+            self.is_pi = True
+            self.mode = 'playback'
+        else:
+            import serial
+            print(f"[手臂] 正在連接 ESP32 ({port})...")
+            self.ser = serial.Serial(port, baud, timeout=1)
+            time.sleep(2)  # 等待 ESP32 重啟就緒
         threading.Thread(target=self._receive_loop, daemon=True).start()
         time.sleep(0.2)
         self._ready = True
         st = self.query_state(timeout=1.0)
-        if st:
+        if st and self.is_pi:
+            where = st[1] if st[1] else "未知 (伺服板剛上電，第一個動作會直接跳到定位，請注意)"
+            print(f"[手臂] PCA9685 連線成功，手臂角度 {where}")
+        elif st:
             print(f"[手臂] 連線成功，韌體回應正常 (模式 {st[0]}, 角度 {st[1]})")
         else:
             print("[手臂] ⚠️ 已連線但韌體沒有回應狀態查詢，請確認已燒錄 firmware/esp32_arm")
@@ -185,6 +221,8 @@ class RobotArm:
 
     # ---------------- 錄製 ----------------
     def start_recording(self):
+        if self.is_pi:
+            print("⚠️ 樹莓派版沒有示範臂，不能錄製；請在 Windows + ESP32 錄好再用 pi/deploy.ps1 複製過來")
         if self.mode != 'live':
             # 只有即時連動模式 ESP32 才會回傳角度
             self.live()
@@ -217,6 +255,10 @@ class RobotArm:
         """問韌體目前模式與輸出角度，回傳 (模式, [j1..j6])；沒回應回傳 None"""
         if self.ser is None:
             return ('SIM', self.current_angles)
+        if self.is_pi:
+            mode, angles, clamps = self.ser.query()   # 本機直接查，angles 可能是 None (位置未知)
+            self.clamp_angles = clamps
+            return (mode, angles)
         self._state_event.clear()
         self.ser.write(b"?\n")
         if not self._state_event.wait(timeout):
@@ -269,6 +311,8 @@ class RobotArm:
         if st is None:
             return None
         mode, angles = st
+        if angles is None:
+            return False
         diff = max(abs(a - b) for a, b in zip(angles, clamp_angles(expected)))
         if mode != 'PLAYBACK' or diff > tol:
             print(f"[手臂] ⚠️ 韌體狀態 {mode} 角度 {angles}，預期 {clamp_angles(expected)}")
@@ -300,6 +344,9 @@ class RobotArm:
             self.live()
             time.sleep(0.5)
             st = self.query_state(1.0)
+        if st[1] is None:
+            check("手臂位置已知", False, "(伺服板剛上電，請先輸入 home 讓手臂到初始點)")
+            return False
         base = clamp_angles(st[1])
 
         self.busy = True
@@ -330,7 +377,7 @@ class RobotArm:
         self.live()                                # 解除停止，回到跟隨示範臂
         time.sleep(0.3)
         st = self.query_state()
-        check("解除停止回到即時連動", st is not None and st[0] == 'RUNNING')
+        check("解除停止", st is not None and st[0] != 'EMERGENCY_STOP')
         return all(results)
 
     # ---------------- 播放 ----------------
@@ -348,7 +395,7 @@ class RobotArm:
             return
         st = self.query_state()
         if st is not None:
-            self.current_angles = list(st[1])
+            self.current_angles = list(st[1]) if st[1] else None
 
     def _converge(self, target, max_tries=30):
         """韌體每個封包最多轉 PLAYBACK_MAX_STEP 度；沒到位就補送目標，直到真的到位"""
@@ -361,7 +408,7 @@ class RobotArm:
             st = self.query_state()
             if st is None:
                 return False
-            if max(abs(a - b) for a, b in zip(st[1], target)) <= 1:
+            if st[1] is not None and max(abs(a - b) for a, b in zip(st[1], target)) <= 1:
                 self.current_angles = list(st[1])
                 return True
             self._send(target)

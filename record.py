@@ -216,7 +216,7 @@ def test_vision(robot, preview, arg):
         else:
             print(f"⚠️ 用法: v 1~{len(HAND_ZONES)} / v all / v p")
     except Exception as e:
-        print(f"[Gemini] 呼叫失敗: {e}")
+        print(f"[影像辨識] 失敗: {e}")
 
 
 def test_slot(robot, slot):
@@ -376,6 +376,7 @@ def main():
             used = {i for i, c in ((HAND_CAMERA_INDEX, preview.hand_cam), (PLAY_CAMERA_INDEX, preview.play_cam)) if c.ok}
             for i, info in probe_cameras(skip=used):
                 print(f"   鏡頭 {i}: {info}")
+            print("   要換鏡頭：在 .env 寫 HAND_CAMERA=編號或路徑、PLAY_CAMERA=編號或路徑，再重開程式")
         else:
             print("⚠️ 未知指令！")
             print(HELP)

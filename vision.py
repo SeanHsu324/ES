@@ -15,6 +15,18 @@ from config import (
     HAND_ZONES, NUM_SLOTS, PHOTO_SETTLE_SEC, HAND_REVERSED, SNAPSHOT_DIR,
 )
 from robot_arm import HOME
+from config import BASE_DIR
+
+# 辨識服務的技術細節 (模型、回應時間、錯誤) 只寫進本機 logs/vision.log，不顯示在終端機 / Discord
+import logging
+os.makedirs(os.path.join(BASE_DIR, 'logs'), exist_ok=True)
+vlog = logging.getLogger('vision')
+vlog.setLevel(logging.INFO)
+vlog.propagate = False
+if not vlog.handlers:
+    _h = logging.FileHandler(os.path.join(BASE_DIR, 'logs', 'vision.log'), encoding='utf-8')
+    _h.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(message)s'))
+    vlog.addHandler(_h)
 
 # =====================================================
 # 牌名 <-> 編號
@@ -70,20 +82,31 @@ def put_text(img, text, y, scale, color, thick, x=20):
 # =====================================================
 # 鏡頭 (背景持續讀取，永遠拿到最新畫面)
 # =====================================================
+def _camera_backend():
+    # Windows: DirectShow；樹莓派 / Linux: V4L2
+    return cv2.CAP_DSHOW if sys.platform == 'win32' else cv2.CAP_V4L2
+
+
 class Camera:
     def __init__(self, index, name):
         self.index = index
         self.name = name
-        backend = cv2.CAP_DSHOW if sys.platform == 'win32' else cv2.CAP_ANY
-        self.cap = cv2.VideoCapture(index, backend)
+        self.cap = None
+        self.ok = False
+        self._frame = None
+        self._frame_time = 0.0
+        self._lock = threading.Lock()
+        self._running = False
+        if index is None:
+            print(f"[鏡頭] {name} 未設定，略過")
+            return
+        # index 可以是編號 (0, 1, 2…) 或 Linux 裝置路徑 (/dev/v4l/by-id/...)
+        self.cap = cv2.VideoCapture(index, _camera_backend())
         # MJPG 壓縮：兩顆 USB 鏡頭同時跑 1280x720 未壓縮畫面時頻寬不夠，會卡頓
         self.cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*'MJPG'))
         self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, CAMERA_WIDTH)
         self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, CAMERA_HEIGHT)
         self.ok = self.cap.isOpened()
-        self._frame = None
-        self._frame_time = 0.0
-        self._lock = threading.Lock()
         self._running = self.ok
         if self.ok:
             threading.Thread(target=self._loop, daemon=True).start()
@@ -126,21 +149,31 @@ class Camera:
     def release(self):
         self._running = False
         time.sleep(0.05)
-        self.cap.release()
+        if self.cap is not None:
+            self.cap.release()
 
 
 def probe_cameras(max_index=6, skip=()):
-    """列出可以開啟的鏡頭編號"""
+    """
+    列出可以開啟的鏡頭。
+    Windows: 編號 0~max_index；Linux: /dev/v4l/by-id/ 下的 USB 鏡頭 (固定名稱，建議寫進 .env)
+    """
+    if sys.platform == 'win32':
+        candidates = list(range(max_index))
+    else:
+        import glob
+        candidates = sorted(glob.glob('/dev/v4l/by-id/*-video-index0')) or \
+            sorted(glob.glob('/dev/video*'), key=lambda d: int(d[len('/dev/video'):] or 0))[:12]
     found = []
-    backend = cv2.CAP_DSHOW if sys.platform == 'win32' else cv2.CAP_ANY
-    for i in range(max_index):
-        if i in skip:
-            found.append((i, '使用中'))
+    for dev in candidates:
+        if dev in skip:
+            found.append((dev, '使用中'))
             continue
-        cap = cv2.VideoCapture(i, backend)
+        cap = cv2.VideoCapture(dev, _camera_backend())
         if cap.isOpened():
             ret, frame = cap.read()
-            found.append((i, f"{frame.shape[1]}x{frame.shape[0]}" if ret else '開得起來但讀不到畫面'))
+            if ret:
+                found.append((dev, f"{frame.shape[1]}x{frame.shape[0]}"))
         cap.release()
     return found
 
@@ -213,14 +246,15 @@ class GeminiCardReader:
             except Exception as e:
                 msg = str(e).split('.')[0][:80]
                 errors.append(f"{model}: {msg}")
-                print(f"[Gemini] {model} 失敗 ({time.time()-t0:.0f}s): {msg}，換下一個模型")
+                vlog.warning(f"{model} 失敗 ({time.time()-t0:.0f}s): {msg}")
                 continue
             if model != self.model:
-                print(f"[Gemini] 改用 {model}")
+                vlog.info(f"改用 {model}")
                 self.model = model
-            print(f"[Gemini] {model} 回應 {time.time()-t0:.1f}s")
+            vlog.info(f"{model} 回應 {time.time()-t0:.1f}s -> {names}")
             return names
-        raise RuntimeError("所有 Gemini 模型都失敗: " + " | ".join(errors))
+        vlog.error("全部失敗: " + " | ".join(errors))
+        raise RuntimeError("辨識服務暫時無法使用，請稍後再試")
 
     def read_hand(self, frame, n):
         """回傳該排由左到右的牌名陣列 (長度應為 n)"""
@@ -259,7 +293,7 @@ def capture_zone(robot, hand_cam, zone):
 
 def read_zone(reader, frame, zone):
     names = reader.read_hand(frame, zone['count'])
-    print(f"[Gemini] {zone['label']} 由左到右: {names}")
+    print(f"[影像辨識] {zone['label']} 由左到右: {names}")
     names = (names + ['??'] * zone['count'])[:zone['count']]
     return names[::-1] if HAND_REVERSED else names
 

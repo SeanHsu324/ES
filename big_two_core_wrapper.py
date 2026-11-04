@@ -1,6 +1,7 @@
 import ctypes
 import numpy as np
 import os
+import sys
 
 # 定義 C 語言結構和類型
 DECK_SIZE = 52
@@ -12,12 +13,14 @@ class HandEvaluation(ctypes.Structure):
         ("value", ctypes.c_int)
     ]
 
-# 載入共享庫
+# 載入共享庫：Windows 用 .dll，樹莓派 / Linux 用 .so (原始碼在 c_core/，可用 pi/setup_pi.sh 重新編譯)
+_LIB_NAME = "big_two_c_lib.dll" if sys.platform == "win32" else "big_two_core_lib.so"
+_LIB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), _LIB_NAME)
 try:
-    _lib = ctypes.CDLL(os.path.join(os.path.dirname(__file__), "big_two_c_lib.dll"))
-except OSError:
-    # 如果找不到，嘗試從當前目錄載入
-    _lib = ctypes.CDLL(".big_two_c_lib.dll")
+    _lib = ctypes.CDLL(_LIB_PATH)
+except OSError as e:
+    raise OSError(f"無法載入 C 核心 {_LIB_PATH}：{e}\n"
+                  "樹莓派請執行: gcc -O2 -shared -fPIC -o big_two_core_lib.so c_core/big_two_core.c") from e
 
 # --- 函數接口定義 ---
 
