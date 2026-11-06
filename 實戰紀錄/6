@@ -1,0 +1,340 @@
+PS C:\Users\User\Desktop\ES> & 'c:\Users\User\AppData\Local\Programs\Python\Python313\python.exe' 'c:/Users/User/Desktop/ES/main.py'
+[手臂] 正在連接 ESP32 (COM15)...
+[手臂] 連線成功，韌體回應正常 (模式 PLAYBACK, 角度 [106, 143, 5, 5, 90, 180])
+[鏡頭] HAND CAM (編號 2) 已開啟
+[鏡頭] PLAY CAM (編號 0) 已開啟
+[手臂] 移到初始點...
+--- 大老二 AI + 機器手臂 ---
+[A] 全自動模式 開/關 (拍照辨識手牌、自動偵測對手出牌、輪到你時手臂自動出牌)
+手動: [H]拍照辨識手牌 [Y]確認 [E]修改格子 [P]辨識對手出牌 [Enter]提交/AI出牌 [Space / PASS按鈕]對手Pass
+[O]排夾 開/關  [C]清空緩衝 [R]重設(排夾打開) [S]緊急停止 [G]解除停止並回初始點 [Q]離開
+[手臂] ▶ home (1 點)
+
+[ESP32 回報] STATUS:CLAMP,0,90
+[排夾] 🔓 已開啟
+
+[ESP32 回報] STATUS:CLAMP,85,0
+[排夾] 🔒 已關閉
+
+[ESP32 回報] STATUS:CLAMP,0,90
+[排夾] 🔓 已開啟
+
+[ESP32 回報] STATUS:CLAMP,85,0
+[排夾] 🔒 已關閉
+[系統] 📷 開始拍照辨識手牌...
+[手臂] ▶ photo_1 (1 點)
+[Gemini] gemini-3.5-flash 回應 2.3s
+[Gemini] Row 1 由左到右: ['C2', 'D7', 'H2', 'H3', 'C9', 'S8', 'DT', 'H9']
+[手臂] ▶ photo_2 (1 點)
+[Gemini] gemini-3.5-flash 回應 4.4s
+[Gemini] Row 2 由左到右: ['H5', 'DA', 'S6', 'C8', 'C3']
+[手臂] ▶ home (1 點)
+
+[ESP32 回報] STATUS:CLAMP,85,0
+[排夾] 🔒 已關閉
+[系統] 手牌已鎖定:
+   第  1 格 -> C2
+   第  2 格 -> D7
+   第  3 格 -> H2
+   第  4 格 -> H3
+   第  5 格 -> C9
+   第  6 格 -> S8
+   第  7 格 -> DT
+   第  8 格 -> H9
+   第  9 格 -> H5
+   第 10 格 -> DA
+   第 11 格 -> S6
+   第 12 格 -> C8
+   第 13 格 -> C3
+[系統] 由 P1 先出
+[系統] ✅ 全自動模式啟動 (按 A 關閉、S 緊急停止、Space 可手動判對手 Pass)
+[手臂] ▶ home (1 點)
+> AI 出牌: C3 H3  (格子: [4, 13])
+[手臂] ▶ pick_04 (694 點)
+[手臂] ▶ drop (179 點)
+[手臂] ▶ home (1 點)
+[手臂] ▶ pick_13 (757 點)
+[手臂] ▶ drop (179 點)
+[手臂] ▶ home (1 點)
+[手臂] ✅ 出牌動作完成
+[Gemini] gemini-3.5-flash 回應 5.0s
+[Gemini] 出牌區: C4 H4 H5 -> 新的牌: C4 H4
+[系統] P2 打出 C4 H4，剩 11 張
+[Gemini] gemini-3.5-flash 回應 5.8s
+[Gemini] 出牌區: C4 H4 -> 新的牌: (無)
+[Gemini] gemini-3.5-flash 回應 4.2s
+[Gemini] 出牌區: H3 -> 新的牌: (無)
+[Gemini] gemini-3.5-flash 回應 6.5s
+[Gemini] 出牌區: C5 D5 H4 -> 新的牌: C5 D5
+[系統] P3 打出 C5 D5，剩 11 張
+[Gemini] gemini-3.5-flash 回應 2.9s
+[Gemini] 出牌區:  -> 新的牌: (無)
+[Space] P4 Pass
+[系統] P4 Pass，累計 Pass: 1
+> AI 出牌: C9 H9  (格子: [5, 8])
+[手臂] ▶ pick_05 (560 點)
+[手臂] ▶ drop (179 點)
+[手臂] ▶ home (1 點)
+[手臂] ▶ pick_08 (722 點)
+[手臂] ▶ drop (179 點)
+[手臂] ▶ home (1 點)
+[手臂] ✅ 出牌動作完成
+[Gemini] gemini-3.5-flash 回應 4.5s
+[Gemini] 出牌區: DQ HQ -> 新的牌: DQ HQ
+[系統] P2 打出 DQ HQ，剩 9 張
+[Gemini] gemini-3.5-flash 回應 3.4s
+[Gemini] 出牌區: DQ HQ -> 新的牌: (無)
+[Gemini] gemini-3.5-flash 回應 2.6s
+[Gemini] 出牌區:  -> 新的牌: (無)
+[Gemini] gemini-3.5-flash 回應 4.4s
+[Gemini] 出牌區: CQ SQ -> 新的牌: CQ SQ
+[系統] P3 打出 CQ SQ，剩 9 張
+[Gemini] gemini-3.5-flash 失敗 (4s): 503 UNAVAILABLE，換下一個模型
+[Gemini] 改用 gemini-3.1-flash-lite
+[Gemini] gemini-3.1-flash-lite 回應 9.6s
+[Gemini] 出牌區: CQ SQ -> 新的牌: (無)
+[Gemini] gemini-3.1-flash-lite 回應 1.9s
+[Gemini] 出牌區:  -> 新的牌: (無)
+[Space] P4 Pass
+[系統] P4 Pass，累計 Pass: 1
+> AI 出牌: C2 H2  (格子: [1, 3])
+[手臂] ▶ pick_01 (911 點)
+[手臂] ▶ drop (179 點)
+[手臂] ▶ home (1 點)
+[手臂] ▶ pick_03 (627 點)
+[手臂] ▶ drop (179 點)
+[手臂] ▶ home (1 點)
+[手臂] ✅ 出牌動作完成
+[Gemini] gemini-3.1-flash-lite 回應 5.6s
+[Gemini] 出牌區: S9 -> 新的牌: S9
+[警告] S9 不是合法出牌，可能辨識錯誤；請整理牌後再放一次，或按 P + Enter 手動輸入
+[Gemini] gemini-3.1-flash-lite 回應 15.1s
+[Gemini] 出牌區: H2 -> 新的牌: (無)
+[Space] P2 Pass
+[系統] P2 Pass，累計 Pass: 1
+[Space] P3 Pass
+[系統] P3 Pass，累計 Pass: 2
+[Space] P4 Pass
+[系統] P4 Pass，累計 Pass: 3
+[系統] 三人 Pass，新回合。輪到 P1
+> AI 出牌: H5  (格子: [9])
+[手臂] ▶ pick_09 (834 點)
+[手臂] ▶ drop (179 點)
+[手臂] ▶ home (1 點)
+[手臂] ✅ 出牌動作完成
+[Gemini] gemini-3.1-flash-lite 回應 4.8s
+[Gemini] 出牌區: H5 H7 H9 -> 新的牌: H7
+[系統] P2 打出 H7，剩 8 張
+[Gemini] gemini-3.1-flash-lite 回應 5.2s
+[Gemini] 出牌區: C7 HA S7 -> 新的牌: C7 HA S7
+[警告] C7 HA S7 不是合法出牌，可能辨識錯誤；請整理牌後再放一次，或按 P + Enter 手動輸入
+[Gemini] gemini-3.1-flash-lite 回應 12.2s
+[Gemini] 出牌區: C9 D6 H9 -> 新的牌: D6
+[警告] D6 不是合法出牌，可能辨識錯誤；請整理牌後再放一次，或按 P + Enter 手動輸入
+[Gemini] gemini-3.1-flash-lite 回應 3.6s
+[Gemini] 出牌區: C2 H3 H4 H2 S4 S5 S8 -> 新的牌: S4 S5
+[警告] S4 S5 不是合法出牌，可能辨識錯誤；請整理牌後再放一次，或按 P + Enter 手動輸入
+[Gemini] gemini-3.1-flash-lite 回應 4.7s
+[Gemini] 出牌區: D5 D6 H5 H7 H8 S4 S6 S7 S8 S2 -> 新的牌: D6 H8 S4 S7 S2
+[警告] D6 H8 S4 S7 S2 不是合法出牌，可能辨識錯誤；請整理牌後再放一次，或按 P + Enter 手動輸入
+[Gemini] gemini-3.1-flash-lite 失敗 (24s): 504 DEADLINE_EXCEEDED，換下一個模型
+[Gemini] 改用 gemini-3.5-flash
+[Gemini] gemini-3.5-flash 回應 2.2s
+[Gemini] 出牌區: D9 -> 新的牌: D9
+[系統] P3 打出 D9，剩 8 張
+[Gemini] gemini-3.5-flash 回應 3.6s
+[Gemini] 出牌區: D9 -> 新的牌: (無)
+[Gemini] gemini-3.5-flash 失敗 (0s): 429 RESOURCE_EXHAUSTED，換下一個模型
+[Gemini] 改用 gemini-3.1-flash-lite
+[Gemini] gemini-3.1-flash-lite 回應 1.8s
+[Gemini] 出牌區: C9 D5 D9 H7 S5 S8 -> 新的牌: S5
+[警告] S5 不是合法出牌，可能辨識錯誤；請整理牌後再放一次，或按 P + Enter 手動輸入
+[Gemini] gemini-3.1-flash-lite 回應 2.5s
+[Gemini] 出牌區: S9 -> 新的牌: S9
+[系統] P4 打出 S9，剩 12 張
+> AI 出牌: DT  (格子: [7])
+[手臂] ▶ pick_07 (673 點)
+[手臂] ▶ drop (179 點)
+[手臂] ▶ home (1 點)
+[手臂] ✅ 出牌動作完成
+[Gemini] gemini-3.1-flash-lite 回應 2.0s
+[Gemini] 出牌區: DT HT S9 -> 新的牌: HT
+[系統] P2 打出 HT，剩 7 張
+[Gemini] gemini-3.1-flash-lite 回應 2.0s
+[Gemini] 出牌區: D9 HT S9 -> 新的牌: (無)
+[Gemini] gemini-3.1-flash-lite 回應 2.2s
+[Gemini] 出牌區: D9 S9 -> 新的牌: (無)
+[Gemini] gemini-3.1-flash-lite 回應 1.5s
+[Gemini] 出牌區: H5 H7 S4 S6 S8 S9 -> 新的牌: S4
+[警告] S4 不是合法出牌，可能辨識錯誤；請整理牌後再放一次，或按 P + Enter 手動輸入
+[Gemini] gemini-3.1-flash-lite 回應 1.9s
+[Gemini] 出牌區: DK -> 新的牌: DK
+[系統] P3 打出 DK，剩 7 張
+[Gemini] gemini-3.1-flash-lite 回應 1.6s
+[Gemini] 出牌區: DK -> 新的牌: (無)
+[Gemini] gemini-3.1-flash-lite 回應 2.4s
+[Gemini] 出牌區: S4 S6 S7 S8 S9 ST -> 新的牌: S4 S7 ST
+[警告] S4 S7 ST 不是合法出牌，可能辨識錯誤；請整理牌後再放一次，或按 P + Enter 手動輸入
+[Gemini] gemini-3.1-flash-lite 回應 2.0s
+[Gemini] 出牌區: CA -> 新的牌: CA
+[系統] P4 打出 CA，剩 11 張
+> AI 出牌: DA  (格子: [10])
+[手臂] ▶ pick_10 (562 點)
+[手臂] ▶ drop (179 點)
+[手臂] ▶ home (1 點)
+[手臂] ✅ 出牌動作完成
+[Space] P2 Pass
+[系統] P2 Pass，累計 Pass: 1
+[Space] P3 Pass
+[系統] P3 Pass，累計 Pass: 2
+[Gemini] gemini-3.1-flash-lite 回應 2.6s
+[Gemini] 出牌區: S2 -> 新的牌: S2
+[系統] P4 打出 S2，剩 10 張
+> AI: Pass
+[系統] P1 Pass，累計 Pass: 1
+[Gemini] gemini-3.1-flash-lite 回應 2.2s
+[Gemini] 出牌區: C3 C4 C9 C2 S7 S8 ST -> 新的牌: S7 ST
+[警告] S7 ST 不是合法出牌，可能辨識錯誤；請整理牌後再放一次，或按 P + Enter 手動輸入
+[Space] P2 Pass
+[系統] P2 Pass，累計 Pass: 2
+[Space] P3 Pass
+[系統] P3 Pass，累計 Pass: 3
+[系統] 三人 Pass，新回合。輪到 P4
+[Gemini] gemini-3.1-flash-lite 回應 1.8s
+[Gemini] 出牌區: D4 S4 -> 新的牌: D4 S4
+[系統] P4 打出 D4 S4，剩 8 張
+> AI 出牌: C8 S8  (格子: [6, 12])
+[手臂] ▶ pick_06 (691 點)
+[手臂] ▶ drop (179 點)
+[手臂] ▶ home (1 點)
+[手臂] ▶ pick_12 (688 點)
+[手臂] ▶ drop (179 點)
+[手臂] ▶ home (1 點)
+[手臂] ✅ 出牌動作完成
+[Gemini] gemini-3.1-flash-lite 回應 5.4s
+[Gemini] 出牌區: S3 S4 S5 S6 S7 S8 S9 ST SJ SQ SK SA S2 -> 新的牌: S3 S5 S7 ST SJ SK SA
+[警告] S3 S5 S7 ST SJ SK SA 不是合法出牌，可能辨識錯誤；請整理牌後再放一次，或按 P + Enter 手動輸入
+[Space] P2 Pass
+[系統] P2 Pass，累計 Pass: 1
+[Gemini] gemini-3.1-flash-lite 回應 2.4s
+[Gemini] 出牌區: HA SA -> 新的牌: HA SA
+[系統] P3 打出 HA SA，剩 5 張
+[Gemini] gemini-3.1-flash-lite 回應 2.0s
+[Gemini] 出牌區:  -> 新的牌: (無)
+[Space] P4 Pass
+[系統] P4 Pass，累計 Pass: 1
+> AI: Pass
+[系統] P1 Pass，累計 Pass: 2
+[Space] P2 Pass
+[系統] P2 Pass，累計 Pass: 3
+[系統] 三人 Pass，新回合。輪到 P3
+[Gemini] gemini-3.1-flash-lite 回應 1.9s
+[Gemini] 出牌區: S3 -> 新的牌: S3
+[系統] P3 打出 S3，剩 4 張
+[Gemini] gemini-3.1-flash-lite 回應 1.9s
+[Gemini] 出牌區: H5 H6 S3 S4 S5 S6 S7 S9 -> 新的牌: H6 S5 S7
+[警告] H6 S5 S7 不是合法出牌，可能辨識錯誤；請整理牌後再放一次，或按 P + Enter 手動輸入
+[Gemini] gemini-3.1-flash-lite 回應 2.2s
+[Gemini] 出牌區: S5 -> 新的牌: S5
+[系統] P4 打出 S5，剩 7 張
+> AI 出牌: D7  (格子: [2])
+[手臂] ▶ pick_02 (576 點)
+[手臂] ▶ drop (179 點)
+[手臂] ▶ home (1 點)
+[手臂] ✅ 出牌動作完成
+[Gemini] gemini-3.1-flash-lite 回應 2.0s
+[Gemini] 出牌區: DJ -> 新的牌: DJ
+[系統] P2 打出 DJ，剩 6 張
+[Gemini] gemini-3.1-flash-lite 回應 1.9s
+[Gemini] 出牌區:  -> 新的牌: (無)
+[Space] P3 Pass
+[系統] P3 Pass，累計 Pass: 1
+[Gemini] gemini-3.1-flash-lite 回應 2.0s
+[Gemini] 出牌區:  -> 新的牌: (無)
+[Gemini] gemini-3.1-flash-lite 回應 1.9s
+[Gemini] 出牌區: HJ -> 新的牌: HJ
+[系統] P4 打出 HJ，剩 6 張
+> AI: Pass
+[系統] P1 Pass，累計 Pass: 1
+[Gemini] gemini-3.1-flash-lite 回應 2.2s
+[Gemini] 出牌區: D4 D5 D9 H4 S3 S6 S8 -> 新的牌: (無)
+[Gemini] gemini-3.1-flash-lite 回應 1.9s
+[Gemini] 出牌區: CK -> 新的牌: CK
+[系統] P2 打出 CK，剩 5 張
+[Gemini] gemini-3.1-flash-lite 回應 2.3s
+[Gemini] 出牌區: D5 D7 HK S4 S6 S8 SQ -> 新的牌: HK
+[系統] P3 打出 HK，剩 3 張
+[Gemini] gemini-3.1-flash-lite 回應 2.0s
+[Gemini] 出牌區: D2 -> 新的牌: D2
+[系統] P4 打出 D2，剩 5 張
+> AI: Pass
+[系統] P1 Pass，累計 Pass: 1
+[Gemini] gemini-3.1-flash-lite 回應 2.0s
+[Gemini] 出牌區: C4 C7 D4 D6 D8 H7 S5 S7 S2 -> 新的牌: C7 D6 D8 S7
+[警告] C7 D6 D8 S7 不是合法出牌，可能辨識錯誤；請整理牌後再放一次，或按 P + Enter 手動輸入
+[Gemini] gemini-3.1-flash-lite 回應 2.1s
+[Gemini] 出牌區:  -> 新的牌: (無)
+[Gemini] gemini-3.1-flash-lite 回應 2.0s
+[Gemini] 出牌區: D2 -> 新的牌: (無)
+[Gemini] gemini-3.1-flash-lite 回應 1.6s
+[Gemini] 出牌區: C6 C7 CQ D7 D2 H4 H5 H6 H8 H9 S3 S4 S5 S7 S9 ST -> 新的牌: C6 C7 H6 H8 S7 ST
+[警告] C6 C7 H6 H8 S7 ST 不是合法出牌，可能辨識錯誤；請整理牌後再放一次，或按 P + Enter 手動輸入
+[Space] P2 Pass
+[系統] P2 Pass，累計 Pass: 2
+[Gemini] gemini-3.1-flash-lite 回應 2.5s
+[Gemini] 出牌區: D2 -> 新的牌: (無)
+[Gemini] gemini-3.1-flash-lite 回應 1.8s
+[Gemini] 出牌區: D2 -> 新的牌: (無)
+[Gemini] gemini-3.1-flash-lite 回應 23.7s
+[Gemini] 出牌區: S2 -> 新的牌: (無)
+[Space] P3 Pass
+[系統] P3 Pass，累計 Pass: 3
+[系統] 三人 Pass，新回合。輪到 P4
+[Gemini] gemini-3.1-flash-lite 回應 2.2s
+[Gemini] 出牌區: CJ SJ -> 新的牌: CJ SJ
+[系統] P4 打出 CJ SJ，剩 3 張
+> AI: Pass
+[系統] P1 Pass，累計 Pass: 1
+[Gemini] gemini-3.1-flash-lite 回應 2.0s
+[Gemini] 出牌區: C4 C5 H6 S4 S5 -> 新的牌: H6
+[警告] H6 不是合法出牌，可能辨識錯誤；請整理牌後再放一次，或按 P + Enter 手動輸入
+[Space] P2 Pass
+[系統] P2 Pass，累計 Pass: 2
+[Gemini] gemini-3.1-flash-lite 回應 2.2s
+[Gemini] 出牌區:  -> 新的牌: (無)
+[Space] P3 Pass
+[系統] P3 Pass，累計 Pass: 3
+[系統] 三人 Pass，新回合。輪到 P4
+[Gemini] gemini-3.1-flash-lite 回應 1.8s
+[Gemini] 出牌區: ST -> 新的牌: ST
+[系統] P4 打出 ST，剩 2 張
+> AI: Pass
+[系統] P1 Pass，累計 Pass: 1
+[Gemini] gemini-3.1-flash-lite 失敗 (23s): 504 DEADLINE_EXCEEDED，換下一個模型
+[Gemini] gemini-3.5-flash 失敗 (0s): 429 RESOURCE_EXHAUSTED，換下一個模型
+[Gemini] 改用 gemini-3.5-flash-lite
+[Gemini] gemini-3.5-flash-lite 回應 1.2s
+[Gemini] 出牌區: ST -> 新的牌: (無)
+[Gemini] gemini-3.5-flash-lite 回應 2.4s
+[Gemini] 出牌區:  -> 新的牌: (無)
+[Space] P2 Pass
+[系統] P2 Pass，累計 Pass: 2
+[Space] P3 Pass
+[系統] P3 Pass，累計 Pass: 3
+[系統] 三人 Pass，新回合。輪到 P4
+[Gemini] gemini-3.5-flash-lite 回應 2.0s
+[Gemini] 出牌區: HK SK -> 新的牌: SK
+[系統] P4 打出 SK，剩 1 張
+> AI: Pass
+[系統] P1 Pass，累計 Pass: 1
+[Gemini] gemini-3.5-flash-lite 回應 2.1s
+[Gemini] 出牌區: HK SK -> 新的牌: (無)
+[Space] P2 Pass
+[系統] P2 Pass，累計 Pass: 2
+[Space] P3 Pass
+[系統] P3 Pass，累計 Pass: 3
+[系統] 三人 Pass，新回合。輪到 P4
+[Gemini] gemini-3.5-flash-lite 回應 2.2s
+[Gemini] 出牌區: C6 -> 新的牌: C6
+[系統] P4 打出 C6，剩 0 張
+[系統] P4 出完牌，遊戲結束
