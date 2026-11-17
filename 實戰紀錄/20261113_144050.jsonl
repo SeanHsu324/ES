@@ -1,0 +1,62 @@
+{"t": 1794552050.07, "event": "start", "policy": "第二代 (會記牌、能出順子同花)", "hand": ["HA", "SQ", "DQ", "SA", "H7", "H6", "D8", "ST", "HJ", "H8", "SJ", "C9", "S4"], "first": 1}
+{"t": 1794552287.92, "event": "play", "player": 1, "cards": ["C3", "H3"], "left": 11}
+{"t": 1794552302.4, "event": "pass", "player": 2}
+{"t": 1794552317.33, "event": "play", "player": 3, "cards": ["D4", "H4"], "left": 11}
+{"t": 1794552322.36, "event": "play", "player": 0, "cards": ["D8", "H8"], "left": 11}
+{"t": 1794552377.01, "event": "play", "player": 1, "cards": ["CQ", "HQ"], "left": 9}
+{"t": 1794552394.59, "event": "play", "player": 2, "cards": ["HK", "SK"], "left": 11}
+{"t": 1794552403.91, "event": "pass", "player": 3}
+{"t": 1794552408.92, "event": "play", "player": 0, "cards": ["CA", "SA"], "left": 9}
+{"t": 1794552454.33, "event": "pass", "player": 1}
+{"t": 1794552467.49, "event": "pass", "player": 2}
+{"t": 1794552476.5, "event": "pass", "player": 3}
+{"t": 1794552476.5, "event": "new_round", "player": 0}
+{"t": 1794552481.51, "event": "play", "player": 0, "cards": ["S4"], "left": 8}
+{"t": 1794552525.9, "event": "play", "player": 1, "cards": ["S5"], "left": 8}
+{"t": 1794552572.8, "event": "play", "player": 2, "cards": ["S6"], "left": 10}
+{"t": 1794552662.17, "event": "play", "player": 3, "cards": ["S7"], "left": 10}
+{"t": 1794552667.19, "event": "play", "player": 0, "cards": ["H9"], "left": 7}
+{"t": 1794552752.21, "event": "play", "player": 1, "cards": ["DJ"], "left": 7}
+{"t": 1794552767.23, "event": "pass", "player": 2}
+{"t": 1794552809.26, "event": "play", "player": 3, "cards": ["DQ"], "left": 9}
+{"t": 1794552814.26, "event": "play", "player": 0, "cards": ["SQ"], "left": 6}
+{"t": 1794552849.97, "event": "pass", "player": 1}
+{"t": 1794552876.01, "event": "play", "player": 2, "cards": ["C2"], "left": 9}
+{"t": 1794552901.17, "event": "play", "player": 3, "cards": ["H2"], "left": 8}
+{"t": 1794552906.18, "event": "pass", "player": 0}
+{"t": 1794552913.49, "event": "pass", "player": 1}
+{"t": 1794552925.62, "event": "pass", "player": 2}
+{"t": 1794552925.62, "event": "new_round", "player": 3}
+{"t": 1794552980.19, "event": "play", "player": 3, "cards": ["S3"], "left": 7}
+{"t": 1794552985.2, "event": "play", "player": 0, "cards": ["H6"], "left": 5}
+{"t": 1794553013.04, "event": "play", "player": 1, "cards": ["C7"], "left": 6}
+{"t": 1794553041.2, "event": "play", "player": 2, "cards": ["S8"], "left": 8}
+{"t": 1794553062.32, "event": "play", "player": 3, "cards": ["S9"], "left": 6}
+{"t": 1794553067.34, "event": "play", "player": 0, "cards": ["ST"], "left": 4}
+{"t": 1794553093.89, "event": "pass", "player": 1}
+{"t": 1794553106.85, "event": "play", "player": 2, "cards": ["CJ"], "left": 7}
+{"t": 1794553113.95, "event": "pass", "player": 3}
+{"t": 1794553118.96, "event": "play", "player": 0, "cards": ["HJ"], "left": 3}
+{"t": 1794553140.66, "event": "pass", "player": 1}
+{"t": 1794553159.36, "event": "play", "player": 2, "cards": ["D2"], "left": 6}
+{"t": 1794553164.42, "event": "pass", "player": 3}
+{"t": 1794553169.43, "event": "pass", "player": 0}
+{"t": 1794553176.14, "event": "pass", "player": 1}
+{"t": 1794553176.14, "event": "new_round", "player": 2}
+{"t": 1794553190.14, "event": "play", "player": 2, "cards": ["D3"], "left": 5}
+{"t": 1794553204.63, "event": "play", "player": 3, "cards": ["D6"], "left": 5}
+{"t": 1794553209.65, "event": "play", "player": 0, "cards": ["H7"], "left": 2}
+{"t": 1794553230.59, "event": "pass", "player": 1}
+{"t": 1794553241.28, "event": "play", "player": 2, "cards": ["D9"], "left": 4}
+{"t": 1794553274.67, "event": "play", "player": 3, "cards": ["CT"], "left": 4}
+{"t": 1794553279.69, "event": "play", "player": 0, "cards": ["SJ"], "left": 1}
+{"t": 1794553338.36, "event": "play", "player": 1, "cards": ["CK"], "left": 5}
+{"t": 1794553379.93, "event": "play", "player": 2, "cards": ["S2"], "left": 3}
+{"t": 1794553386.86, "event": "pass", "player": 3}
+{"t": 1794553391.87, "event": "pass", "player": 0}
+{"t": 1794553401.25, "event": "pass", "player": 1}
+{"t": 1794553401.25, "event": "new_round", "player": 2}
+{"t": 1794553414.55, "event": "play", "player": 2, "cards": ["D5"], "left": 2}
+{"t": 1794553437.32, "event": "play", "player": 3, "cards": ["C8"], "left": 3}
+{"t": 1794553442.35, "event": "play", "player": 0, "cards": ["C9"], "left": 0}
+{"t": 1794553442.35, "event": "win", "player": 0, "reads": 67, "skipped": 19}
