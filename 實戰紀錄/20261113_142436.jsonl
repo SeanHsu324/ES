@@ -1,0 +1,9 @@
+{"t": 1794551076.22, "event": "start", "policy": "第二代 (會記牌、能出順子同花)", "hand": ["HA", "SQ", "DA", "SA", "H7", "H6", "H8", "ST", "HJ", "D8", "SJ", "C9", "S4"], "first": 1}
+{"t": 1794551111.14, "event": "play", "player": 1, "cards": ["C3", "H3"], "left": 11}
+{"t": 1794551127.6, "event": "pass", "player": 2}
+{"t": 1794551202.53, "event": "play", "player": 3, "cards": ["D4", "H4"], "left": 11}
+{"t": 1794551207.72, "event": "play", "player": 0, "cards": ["D8", "H8"], "left": 11}
+{"t": 1794551255.41, "event": "play", "player": 1, "cards": ["CQ", "HQ"], "left": 9}
+{"t": 1794551308.65, "event": "play", "player": 2, "cards": ["HK", "SK"], "left": 11}
+{"t": 1794551318.18, "event": "pass", "player": 3}
+{"t": 1794551323.2, "event": "play", "player": 0, "cards": ["DA", "HA"], "left": 9}
