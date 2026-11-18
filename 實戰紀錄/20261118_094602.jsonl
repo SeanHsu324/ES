@@ -1,0 +1,50 @@
+{"t": 1794966362.34, "event": "start", "policy": "第二代 (會記牌、能出順子同花)", "hand": ["CT", "SJ", "S8", "D2", "D3", "CJ", "HJ", "D8", "C4", "D4", "S2", "C6", "DA"], "first": 1}
+{"t": 1794966391.44, "event": "play", "player": 1, "cards": ["C3", "S3"], "left": 11}
+{"t": 1794966411.33, "event": "play", "player": 2, "cards": ["C7", "S7"], "left": 11}
+{"t": 1794966437.21, "event": "play", "player": 3, "cards": ["D9", "H9"], "left": 11}
+{"t": 1794966442.4, "event": "play", "player": 0, "cards": ["CJ", "HJ"], "left": 11}
+{"t": 1794966486.91, "event": "play", "player": 1, "cards": ["DK", "SK"], "left": 9}
+{"t": 1794966495.2, "event": "pass", "player": 2}
+{"t": 1794966513.15, "event": "pass", "player": 3}
+{"t": 1794966518.17, "event": "pass", "player": 0}
+{"t": 1794966518.17, "event": "new_round", "player": 1}
+{"t": 1794966546.16, "event": "play", "player": 1, "cards": ["S5"], "left": 8}
+{"t": 1794966566.44, "event": "play", "player": 2, "cards": ["D6"], "left": 10}
+{"t": 1794966584.3, "event": "play", "player": 3, "cards": ["DQ"], "left": 10}
+{"t": 1794966589.3, "event": "play", "player": 0, "cards": ["DA"], "left": 10}
+{"t": 1794966625.57, "event": "pass", "player": 1}
+{"t": 1794966649.36, "event": "play", "player": 2, "cards": ["C2"], "left": 9}
+{"t": 1794966658.11, "event": "pass", "player": 3}
+{"t": 1794966663.13, "event": "play", "player": 0, "cards": ["D2"], "left": 9}
+{"t": 1794966704.06, "event": "play", "player": 1, "cards": ["H2"], "left": 7}
+{"t": 1794966722.71, "event": "pass", "player": 2}
+{"t": 1794966725.23, "event": "pass", "player": 3}
+{"t": 1794966730.99, "event": "play", "player": 0, "cards": ["S2"], "left": 8}
+{"t": 1794966753.42, "event": "pass", "player": 1}
+{"t": 1794966762.12, "event": "pass", "player": 2}
+{"t": 1794966763.75, "event": "pass", "player": 3}
+{"t": 1794966763.75, "event": "new_round", "player": 0}
+{"t": 1794966776.15, "event": "play", "player": 0, "cards": ["C4", "D4"], "left": 6}
+{"t": 1794966813.29, "event": "pass", "player": 1}
+{"t": 1794966831.59, "event": "play", "player": 2, "cards": ["C5", "D5"], "left": 7}
+{"t": 1794966870.05, "event": "play", "player": 3, "cards": ["CA", "HA"], "left": 8}
+{"t": 1794966875.06, "event": "pass", "player": 0}
+{"t": 1794966882.65, "event": "pass", "player": 1}
+{"t": 1794966885.51, "event": "pass", "player": 2}
+{"t": 1794966885.51, "event": "new_round", "player": 3}
+{"t": 1794966909.78, "event": "play", "player": 3, "cards": ["H3", "H4", "H5", "H7", "S6"], "left": 3}
+{"t": 1794966914.78, "event": "pass", "player": 0}
+{"t": 1794966919.38, "event": "pass", "player": 1}
+{"t": 1794966921.5, "event": "pass", "player": 2}
+{"t": 1794966921.5, "event": "new_round", "player": 3}
+{"t": 1794966942.63, "event": "play", "player": 3, "cards": ["S4"], "left": 2}
+{"t": 1794966947.64, "event": "play", "player": 0, "cards": ["C6"], "left": 5}
+{"t": 1794966986.78, "event": "play", "player": 1, "cards": ["H6"], "left": 6}
+{"t": 1794967008.19, "event": "play", "player": 2, "cards": ["C8"], "left": 6}
+{"t": 1794967032.3, "event": "play", "player": 3, "cards": ["SA"], "left": 1}
+{"t": 1794967037.3, "event": "pass", "player": 0}
+{"t": 1794967043.12, "event": "pass", "player": 1}
+{"t": 1794967047.08, "event": "pass", "player": 2}
+{"t": 1794967047.08, "event": "new_round", "player": 3}
+{"t": 1794967060.21, "event": "play", "player": 3, "cards": ["CK"], "left": 0}
+{"t": 1794967060.21, "event": "win", "player": 3, "reads": 43, "skipped": 6}
