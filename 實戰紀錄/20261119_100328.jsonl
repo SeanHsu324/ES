@@ -1,0 +1,27 @@
+{"t": 1795053808.68, "event": "start", "policy": "第二代 (會記牌、能出順子同花)", "hand": ["HJ", "D8", "C2", "D4", "CK", "SQ", "SA", "DJ", "C3", "HK", "D3", "S9", "C7"], "first": 0}
+{"t": 1795053809.86, "event": "play", "player": 0, "cards": ["C3", "D3"], "left": 11}
+{"t": 1795053849.34, "event": "pass", "player": 1}
+{"t": 1795053850.31, "event": "pass", "player": 2}
+{"t": 1795053851.02, "event": "pass", "player": 3}
+{"t": 1795053851.02, "event": "new_round", "player": 0}
+{"t": 1795053863.38, "event": "play", "player": 0, "cards": ["D4"], "left": 10}
+{"t": 1795053891.06, "event": "pass", "player": 1}
+{"t": 1795053891.61, "event": "pass", "player": 2}
+{"t": 1795053893.18, "event": "pass", "player": 3}
+{"t": 1795053893.18, "event": "new_round", "player": 0}
+{"t": 1795053900.86, "event": "play", "player": 0, "cards": ["S9"], "left": 9}
+{"t": 1795053916.82, "event": "pass", "player": 1}
+{"t": 1795053917.46, "event": "pass", "player": 2}
+{"t": 1795053918.21, "event": "pass", "player": 3}
+{"t": 1795053918.21, "event": "new_round", "player": 0}
+{"t": 1795053923.22, "event": "play", "player": 0, "cards": ["DJ", "HJ"], "left": 7}
+{"t": 1795053961.55, "event": "pass", "player": 1}
+{"t": 1795053962.19, "event": "pass", "player": 2}
+{"t": 1795053962.81, "event": "pass", "player": 3}
+{"t": 1795053962.81, "event": "new_round", "player": 0}
+{"t": 1795053967.81, "event": "play", "player": 0, "cards": ["C7"], "left": 6}
+{"t": 1795053993.03, "event": "pass", "player": 1}
+{"t": 1795053993.75, "event": "pass", "player": 2}
+{"t": 1795053994.38, "event": "pass", "player": 3}
+{"t": 1795053994.38, "event": "new_round", "player": 0}
+{"t": 1795054004.69, "event": "play", "player": 0, "cards": ["CK", "HK"], "left": 4}
